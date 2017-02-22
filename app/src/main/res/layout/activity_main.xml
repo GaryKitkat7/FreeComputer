@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -10,37 +11,23 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="alexplanasobany7.freecomputer.MainActivity">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
-    <Button
-        android:text="Classe4x5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/planoprova"
+        android:id="@+id/imageView"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="18dp"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:layout_width="82dp"
+        android:layout_height="50dp"
         android:id="@+id/Classe4x5"
-        android:onClick="ObreClase" />
-
-    <Button
-        android:text="Classe5x4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/Classe4x4"
-        android:id="@+id/Classe5x4" />
-
-    <Button
-        android:text="Classe4x4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/Classe4x4"
-        android:layout_above="@+id/Classe5x4"
-        android:layout_alignStart="@+id/Classe4x5"
-        android:layout_marginBottom="44dp"
-        android:onClick="EntraClasse" />
+        android:background="@android:color/transparent"
+        android:onClick="EntraClasse"
+        android:layout_marginBottom="216dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
