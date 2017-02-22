@@ -1,0 +1,10 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin_interior_classe">16dp</dimen>
+    <dimen name="espai_graella_vertical">10dp</dimen>
+    <dimen name="espai_graella_horitz">10dp</dimen>
+    <dimen name="espacio_grilla">4dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="130dp">
+
+    <ImageView
+        android:id="@+id/imatgePC"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:transitionName="@string/nombre_transicion_imagen" />
+
+    <TextView
+        android:id="@+id/nomPC"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_below="@id/imatgePC"
+        android:textSize="18dp"
+        android:background="@color/background_footer"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>
