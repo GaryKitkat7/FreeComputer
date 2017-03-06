@@ -11,23 +11,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="alexplanasobany7.freecomputer.MainActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/planoprova"
-        android:id="@+id/imageView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
-
     <Button
         android:layout_width="82dp"
         android:layout_height="50dp"
-        android:id="@+id/Classe4x5"
-        android:background="@android:color/transparent"
+        android:id="@+id/Classe008"
         android:onClick="EntraClasse"
         android:layout_marginBottom="216dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="008" />
 
 </RelativeLayout>
