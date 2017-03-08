@@ -78,6 +78,7 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         intent.putExtra("estat",estat);
         startActivity(intent);
 
+        
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
