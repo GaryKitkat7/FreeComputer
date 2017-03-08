@@ -79,6 +79,7 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         startActivity(intent);
 
         
+
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
