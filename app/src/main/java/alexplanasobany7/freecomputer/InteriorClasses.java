@@ -34,11 +34,14 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
     private boolean estat;
     private String sala, nomPC, edifici;
     private int [][] M;
+    private Intent intent;
+    private int posi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interior_classes);
+        intent = new Intent(this,ReservarPC.class);
 
         final GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
@@ -59,27 +62,27 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d("Alex", String.valueOf(sala));
 
-        for(int files = 0; files < 5; files++){
-            for(int col = 0; col < 6; col++){
+        boolean trobat = false;
+        for(int files = 0; files < 5 && !trobat; files++){
+            for(int col = 0; col < 6 && !trobat; col++){
                 if (M[files][col]==position){
                     Log.d("Plana", String.valueOf(M[files][col]));
                     new ConsultarDades().execute("http://192.168.1.38/FreeComputer/consultarPC.php?fila="
                             +(files+1)+"&columna="+(col+1)+"&sala="+sala);
+                    posi = position;
+                    trobat = true;
                 }
             }
         }
 
-        Intent intent = new Intent(this, ReservarPC.class);
+        /*Intent intent = new Intent(this, ReservarPC.class);
         intent.putExtra("pos", position);
         intent.putExtra("sala", sala);
         intent.putExtra("nomPC", nomPC);
         intent.putExtra("fila",fila);
         intent.putExtra("columna",columna);
         intent.putExtra("estat",estat);
-        startActivity(intent);
-
-        
-
+        startActivity(intent);*/
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
@@ -93,15 +96,21 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
             }
         }
 
-        @Override
         protected void onPostExecute(String result) {
-            JSONArray ja = null;
-            Log.i("tagconvertstr", "["+result+"]");
+            JSONArray ja;
             try {
                 ja = new JSONArray(result);
                 Log.d("reposta", "La resposta es: " + ja);
-                edifici = ja.getString(0);
-                sala = ja.getString(1);
+                intent.putExtra("pos", posi);
+                intent.putExtra("sala", sala);
+                intent.putExtra("fila", ja.getInt(2));
+                intent.putExtra("columna", ja.getInt(3));
+                intent.putExtra("nomPC", ja.getString(4));
+                intent.putExtra("estat", ja.getInt(5));
+                startActivity(intent);
+
+
+                /*sala = ja.getString(1);
                 fila = ja.getInt(2);
                 columna = ja.getInt(3);
                 nomPC = ja.getString(4);
@@ -109,7 +118,9 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
                 if(est == 1){
                     estat = true;
                 }else estat = false;
-                Log.d("estat", String.valueOf(estat));
+                Log.d("estat", String.valueOf(estat));*/
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.d("reposta", "No ENtRAAA");
