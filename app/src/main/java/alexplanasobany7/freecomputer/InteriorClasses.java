@@ -69,20 +69,14 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
             }
         }
 
-        try {
-            Thread.sleep(1000);
-            Intent intent = new Intent(this, ReservarPC.class);
-            intent.putExtra("pos", position);
-            intent.putExtra("sala", sala);
-            intent.putExtra("nomPC", nomPC);
-            intent.putExtra("fila",fila);
-            intent.putExtra("columna",columna);
-            intent.putExtra("estat",estat);
-            startActivity(intent);
-        } catch (InterruptedException e) {
-            Log.d("ESPERAR_SEGONS", "NO-ES-PERA");
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(this, ReservarPC.class);
+        intent.putExtra("pos", position);
+        intent.putExtra("sala", sala);
+        intent.putExtra("nomPC", nomPC);
+        intent.putExtra("fila",fila);
+        intent.putExtra("columna",columna);
+        intent.putExtra("estat",estat);
+        startActivity(intent);
 
     }
 
