@@ -46,43 +46,21 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         final GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
         gridview.setOnItemClickListener(this);
-
-        M = new int[5][6];
-        int x = 0;
         sala = getIntent().getExtras().getString("sala");
-        for(int files = 0; files < 5; files++){
-            for(int col = 0; col < 6; col++){
-                M[files][col]=x;
-                x++;
-            }
-        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d("Alex", String.valueOf(sala));
 
-        boolean trobat = false;
-        for(int files = 0; files < 5 && !trobat; files++){
-            for(int col = 0; col < 6 && !trobat; col++){
-                if (M[files][col]==position){
-                    Log.d("Plana", String.valueOf(M[files][col]));
-                    new ConsultarDades().execute("http://192.168.1.38/FreeComputer/consultarPC.php?fila="
-                            +(files+1)+"&columna="+(col+1)+"&sala="+sala);
-                    posi = position;
-                    trobat = true;
-                }
-            }
-        }
+        posi = position;
+        int files = position / 6;
+        int col = position % 6;
+        Log.d("ALEX", String.valueOf(files));
+        Log.d("ALEX", String.valueOf(col));
 
-        /*Intent intent = new Intent(this, ReservarPC.class);
-        intent.putExtra("pos", position);
-        intent.putExtra("sala", sala);
-        intent.putExtra("nomPC", nomPC);
-        intent.putExtra("fila",fila);
-        intent.putExtra("columna",columna);
-        intent.putExtra("estat",estat);
-        startActivity(intent);*/
+        new ConsultarDades().execute("http://192.168.1.38/FreeComputer/consultarPC.php?fila="
+                +(files+1)+"&columna="+(col+1)+"&sala="+sala);
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
@@ -108,18 +86,6 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
                 intent.putExtra("nomPC", ja.getString(4));
                 intent.putExtra("estat", ja.getInt(5));
                 startActivity(intent);
-
-
-                /*sala = ja.getString(1);
-                fila = ja.getInt(2);
-                columna = ja.getInt(3);
-                nomPC = ja.getString(4);
-                est = ja.getInt(5);
-                if(est == 1){
-                    estat = true;
-                }else estat = false;
-                Log.d("estat", String.valueOf(estat));*/
-
 
             } catch (JSONException e) {
                 e.printStackTrace();

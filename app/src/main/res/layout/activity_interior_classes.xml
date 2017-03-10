@@ -16,6 +16,6 @@
         android:layout_height="match_parent"
         android:columnWidth="90dp"
         android:horizontalSpacing="@dimen/espai_graella_horitz"
-        android:numColumns="6"
+        android:numColumns="@integer/nCol"
         android:verticalSpacing="@dimen/espai_graella_vertical" />
 </RelativeLayout>

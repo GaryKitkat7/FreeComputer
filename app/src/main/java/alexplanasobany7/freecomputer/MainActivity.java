@@ -13,24 +13,29 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button Sala008;
+    private TextView texte;
+    private int Prova;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Prova = R.integer.nCol;
+        //texte = (TextView)findViewById(R.id.textView2);
         Sala008 = (Button)findViewById(R.id.Classe008);
     }
 
 
     public void EntraClasse (View view){
         Intent intent = new Intent(this, InteriorClasses.class);
-        intent.putExtra("sala", (Sala008.getText().toString())); //TODO: S'ha de cambiar, el 008 l'ha de llegir del MySQL
+        intent.putExtra("sala", (Sala008.getText().toString()));
         startActivity(intent);
     }
 
