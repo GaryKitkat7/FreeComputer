@@ -42,24 +42,20 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interior_classes);
         intent = new Intent(this,ReservarPC.class);
+        sala = getIntent().getExtras().getString("sala");
 
         final GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
         gridview.setOnItemClickListener(this);
-        sala = getIntent().getExtras().getString("sala");
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("Alex", String.valueOf(sala));
-
         posi = position;
         int files = position / 6;
-        int col = position % 6;
-        Log.d("ALEX", String.valueOf(files));
-        Log.d("ALEX", String.valueOf(col));
-
-        new ConsultarDades().execute("http://192.168.1.38/FreeComputer/consultarPC.php?fila="
+        int col = position % 6; // 192.168.1.38 Es la IP del Mac, si traballes amb emulador 10.0.2.2
+        new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
                 +(files+1)+"&columna="+(col+1)+"&sala="+sala);
     }
 

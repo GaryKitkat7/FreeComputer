@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button Sala008;
     private TextView texte;
     private int Prova;
+    private String sala;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Prova = R.integer.nCol;
+        Log.d("AlexPLANA", String.valueOf(Prova));
         //texte = (TextView)findViewById(R.id.textView2);
         Sala008 = (Button)findViewById(R.id.Classe008);
-    }
+        sala = Sala008.getText().toString();
 
+    }
 
     public void EntraClasse (View view){
         Intent intent = new Intent(this, InteriorClasses.class);
@@ -39,6 +43,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
 }
+
 
