@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button Sala008;
     private TextView texte;
     private int Prova;
-    private String sala;
+    public static String sala = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         //texte = (TextView)findViewById(R.id.textView2);
         Sala008 = (Button)findViewById(R.id.Classe008);
         sala = Sala008.getText().toString();
+        Log.d("Alexplana", sala);
 
     }
 

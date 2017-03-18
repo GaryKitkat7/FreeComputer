@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * Created by alexplanasobany on 22/2/17.
  */
 
-public class Ordenadors {
+public class Ordenadors{
     private String nombre;
     private int idDrawable;
     private boolean Reserva;
@@ -54,24 +55,48 @@ public class Ordenadors {
         Ordenadors.ITEMS[posicio] = new Ordenadors("Reservat", R.drawable.no_pc, false);
     }
 
-    /**
-     * Obte un item basat en el seu ID
-     *
-     * @param id
-     * @return Ordenadors
-     */
+    public static String Sala = MainActivity.sala;
 
-    public static int N = 10;
-    public static Ordenadors[] ITEMS = new Ordenadors[N];
-
+    public static int N, files, columnes;
 
     static {
-        for (int i = 0; i < N; i++){
-            //new ConsultarDades().execute("http://10.0.2.2/")
-            ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
+        if (Sala.equals("008") || Sala.equals("010")) {
+            N = 30;
+            files = 5;
+            columnes = 6;
+        } else if (Sala.equals("011")) {
+            N = 25;
+            files = 5;
+            columnes = 5;
+        } else if (Sala.equals("012") || Sala.equals("017") || Sala.equals("018") || Sala.equals("AI1")
+                || Sala.equals("ARE")) {
+            N = 20;
+            files = 4;
+            columnes = 5;
+        } else if (Sala.equals("AI2")) {
+            N = 10;
+            files = 2;
+            columnes = 5;
         }
     }
 
+    public static Ordenadors[] ITEMS = new Ordenadors[N];
+    private static int estatReserva;
+
+    public static int i;
+    static{
+        for(int fi = 0; fi < files; fi++){
+            for(int col = 0; col < columnes; col++){
+                for (i = 0; i < N; i++){
+                    ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
+                }
+            }
+        }
+        /*int fi = 0, col = 0;
+        new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila"+
+                (fi+1)+"&columna="+(col+1)+"sala="+Sala);*/
+
+    }
 
     public static Ordenadors getItem(int id) {
         for (Ordenadors item : ITEMS) {
@@ -82,7 +107,7 @@ public class Ordenadors {
         return null;
     }
 
-    private class ConsultarDades extends AsyncTask<String, Void, String> {
+    private static class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -95,10 +120,16 @@ public class Ordenadors {
 
         protected void onPostExecute(String result) {
             JSONArray ja;
+            Log.d("ALEXPLANAA", result);
             try {
                 ja = new JSONArray(result);
-                Log.d("reposta", "La resposta es: " + ja);
-
+                Log.d("reposta", "" + ja);
+                estatReserva = ja.getInt(5);
+                /*if(estatReserva == 0){
+                    ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
+                }else{
+                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false);
+                }*/
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -107,8 +138,7 @@ public class Ordenadors {
         }
     }
 
-
-    private String downloadUrl(String myurl) throws IOException {
+    private static String downloadUrl(String myurl) throws IOException {
         myurl = myurl.replace(" ", "%20");
         InputStream stream = null;
         int len = 500;
@@ -122,7 +152,7 @@ public class Ordenadors {
             // Open communications link (network traffic occurs here).
             connection.connect();
             int responseCode = connection.getResponseCode();
-            Log.d("reposta", "La resposta es: " + responseCode);
+            Log.d("reposta", "La res-+posta es: " + responseCode);
             // Retrieve the response body as an InputStream.
             stream = connection.getInputStream();
 
@@ -138,12 +168,11 @@ public class Ordenadors {
         }
     }
 
-    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+    public static String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
         Reader reader = new InputStreamReader(stream, "UTF-8");
         char[] buffer = new char[len];
         reader.read(buffer);
         return new String(buffer);
     }
-
 
 }
