@@ -33,11 +33,11 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button Sala008;
+    private Button Sala008, Sala010;
     private TextView texte;
     private String estat;
     public int i = 0;
-    public static String[] sala008;
+    public static String[] sales;
     private int fila008 = 5, columna008 = 6;
     public static String sala = "";
 
@@ -46,22 +46,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sala008 = new String[30];
+        sales= new String[300];
         Sala008 = (Button)findViewById(R.id.Classe008);
-        sala = Sala008.getText().toString();
-        Log.d("Alexplana", sala);
+        Sala010 = (Button) findViewById(R.id.Classe010);
+        /*sala = Sala008.getText().toString();
+        Log.d("Alexplana", sala);*/
 
         for (int f = 0; f < fila008; f++){
             for (int c = 0; c < columna008; c++){
                 new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+sala);
+                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala008.getText().toString());
             }
         }
+
+        for (int f = 0; f < fila008; f++){
+            for (int c = 0; c < columna008; c++){
+                new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
+                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala010.getText().toString());
+            }
+        }
+
+
     }
 
     public void EntraClasse (View view){
+        Button b = (Button)view;
+        if(b.getText().equals("008")){
+            sala = Sala008.getText().toString();
+        }else if(b.getText().equals("010")){
+            sala = Sala010.getText().toString();
+        }
+
         Intent intent = new Intent(this, InteriorClasses.class);
-        intent.putExtra("sala", (Sala008.getText().toString()));
+        intent.putExtra("sala", sala);
         startActivity(intent);
     }
 
@@ -80,10 +97,9 @@ public class MainActivity extends AppCompatActivity {
             JSONArray ja;
             try {
                 ja = new JSONArray(result);
-                estat = ja.getString(5);
-                sala008[i] = ja.getString(5);
+                sales[i] = ja.getString(5);
                 i++;
-                Log.d("ALEXPLANA1", Arrays.toString(sala008));
+                Log.d("ALEXPLANA1", Arrays.toString(sales));
 
             } catch (JSONException e) {
                 e.printStackTrace();

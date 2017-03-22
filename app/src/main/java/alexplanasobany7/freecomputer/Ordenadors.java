@@ -57,7 +57,8 @@ public class Ordenadors{
     }
 
     public static String Sala = MainActivity.sala;
-    public static String[] SalaActual = MainActivity.sala008;
+    public static String[] EstatsSales = MainActivity.sales;
+    public static String[] SalaActual;
     public static int N, files, columnes;
 
     static {
@@ -65,6 +66,18 @@ public class Ordenadors{
             N = 30;
             files = 5;
             columnes = 6;
+            SalaActual = new String[N];
+            if(Sala.equals("008")){
+                for(int i = 0; i < N; i++){
+                    SalaActual[i] = EstatsSales[i];
+                }
+            }else{
+                SalaActual = new String[N];
+                for(int i = 0; i < N; i++){
+                    SalaActual[i] = EstatsSales[i+30];
+                }
+            }
+
         } else if (Sala.equals("011")) {
             N = 25;
             files = 5;
