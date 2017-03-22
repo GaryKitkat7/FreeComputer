@@ -38,6 +38,7 @@ public class Ordenadors{
     public int getIdDrawable() {
         return idDrawable; //Retorna el identificador de la imatge que hi ha en la carpeta drawable
     }
+
     public boolean getReserva(){
         return Reserva;
     }
@@ -56,7 +57,7 @@ public class Ordenadors{
     }
 
     public static String Sala = MainActivity.sala;
-
+    public static String[] SalaActual = MainActivity.sala008;
     public static int N, files, columnes;
 
     static {
@@ -80,99 +81,30 @@ public class Ordenadors{
         }
     }
 
-    public static Ordenadors[] ITEMS = new Ordenadors[N];
-    private static int estatReserva;
 
-    public static int i;
-    static{
-        for(int fi = 0; fi < files; fi++){
-            for(int col = 0; col < columnes; col++){
-                for (i = 0; i < N; i++){
+    public static Ordenadors[] ITEMS = new Ordenadors[N];
+    private static int i = 0;
+
+    static {
+        for (int fi = 0; fi < files; fi++) {
+            for (int col = 0; col < columnes; col++) {
+                if (SalaActual[i].equals("0")) {
                     ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
+                } else if (SalaActual[i].equals("1")) {
+                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false);
                 }
+                i++;
             }
         }
-        /*int fi = 0, col = 0;
-        new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila"+
-                (fi+1)+"&columna="+(col+1)+"sala="+Sala);*/
-
     }
 
-    public static Ordenadors getItem(int id) {
+    /*public static Ordenadors getItem(int id) {
         for (Ordenadors item : ITEMS) {
             if (item.getId() == id) {
                 return item;
             }
         }
         return null;
-    }
-
-    private static class ConsultarDades extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                return downloadUrl(strings[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "URL incorrecta";
-            }
-        }
-
-        protected void onPostExecute(String result) {
-            JSONArray ja;
-            Log.d("ALEXPLANAA", result);
-            try {
-                ja = new JSONArray(result);
-                Log.d("reposta", "" + ja);
-                estatReserva = ja.getInt(5);
-                /*if(estatReserva == 0){
-                    ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
-                }else{
-                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false);
-                }*/
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d("reposta", "No ENtRAAA");
-            }
-        }
-    }
-
-    private static String downloadUrl(String myurl) throws IOException {
-        myurl = myurl.replace(" ", "%20");
-        InputStream stream = null;
-        int len = 500;
-        try {
-            URL url = new URL(myurl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setReadTimeout(3000);
-            connection.setConnectTimeout(3000);
-            connection.setRequestMethod("GET");
-            connection.setDoInput(true);
-            // Open communications link (network traffic occurs here).
-            connection.connect();
-            int responseCode = connection.getResponseCode();
-            Log.d("reposta", "La res-+posta es: " + responseCode);
-            // Retrieve the response body as an InputStream.
-            stream = connection.getInputStream();
-
-            //Convertir el InputString a String
-            String ContentAsString = readIt(stream, len);
-            return ContentAsString;
-
-        } finally {
-            // Close Stream and disconnect HTTPS connection.
-            if (stream != null) {
-                stream.close();
-            }
-        }
-    }
-
-    public static String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
-    }
+    }*/
 
 }

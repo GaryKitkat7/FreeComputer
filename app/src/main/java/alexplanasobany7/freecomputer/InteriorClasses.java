@@ -33,7 +33,6 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
     private int fila, columna, est;
     private boolean estat;
     private String sala, nomPC, edifici;
-    private int [][] M;
     private Intent intent;
     private int posi;
 
@@ -43,6 +42,7 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.activity_interior_classes);
         intent = new Intent(this,ReservarPC.class);
         sala = getIntent().getExtras().getString("sala");
+
 
         final GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
