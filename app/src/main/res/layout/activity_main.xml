@@ -11,43 +11,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="alexplanasobany7.freecomputer.MainActivity">
 
-    <Button
-        android:layout_width="82dp"
-        android:layout_height="50dp"
-        android:id="@+id/Classe008"
-        android:onClick="EntraClasse (MainActivity)"
-        android:layout_marginBottom="216dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="008" />
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="68dp"
-        android:id="@+id/textView2" />
-
-    <Button
-        android:text="010"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="61dp"
-        android:id="@+id/Classe010"
-        android:onClick="EntraClasse" />
-
-    <Button
-        android:layout_width="82dp"
-        android:layout_height="50dp"
-        android:id="@+id/button2"
-        android:onClick="EntraClasse"
-        android:layout_marginBottom="216dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="008" />
-
 </RelativeLayout>

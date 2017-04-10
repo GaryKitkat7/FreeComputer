@@ -2,21 +2,15 @@ package alexplanasobany7.freecomputer;
 
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.transition.Explode;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,12 +22,11 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button Sala008, Sala010;
+    private String Sala008 = "008", Sala010 = "010";
     private TextView texte;
     private String estat;
     public int i = 0;
@@ -46,30 +39,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MapaPrincipal mapaPrincipal = new MapaPrincipal(this);
+        ScrollView scrollView = new ScrollView(this);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
+
+        horizontalScrollView.addView(scrollView);
+        scrollView.addView(mapaPrincipal);
+        setContentView(horizontalScrollView);
+
         sales= new String[300];
-        Sala008 = (Button)findViewById(R.id.Classe008);
-        Sala010 = (Button) findViewById(R.id.Classe010);
-        /*sala = Sala008.getText().toString();
-        Log.d("Alexplana", sala);*/
+        /*Sala008 = (Button)findViewById(R.id.Classe008);
+        Sala010 = (Button) findViewById(R.id.Classe010);*/
 
         for (int f = 0; f < fila008; f++){
             for (int c = 0; c < columna008; c++){
-                new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala008.getText().toString());
+                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
+                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala008);
             }
         }
 
         for (int f = 0; f < fila008; f++){
             for (int c = 0; c < columna008; c++){
-                new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala010.getText().toString());
+                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
+                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala010);
             }
         }
 
 
     }
 
-    public void EntraClasse (View view){
+    /*public void EntraClasse (View view){
         Button b = (Button)view;
         if(b.getText().equals("008")){
             sala = Sala008.getText().toString();
@@ -77,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
             sala = Sala010.getText().toString();
         }
 
-        Intent intent = new Intent(this, InteriorClasses.class);
+        Intent intent = new Intent(this, InteriorClassesActivity.class);
         intent.putExtra("sala", sala);
         startActivity(intent);
-    }
+    }*/
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override

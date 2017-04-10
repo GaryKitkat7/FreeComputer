@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InteriorClasses" />
+        <activity android:name=".InteriorClassesActivity" />
         <activity android:name=".ReservarPC" />
         <activity android:name=".Autentificacio"></activity>
     </application>

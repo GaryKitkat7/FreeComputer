@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin_interior_classe"
-    tools:context="alexplanasobany7.freecomputer.InteriorClasses">
+    tools:context="alexplanasobany7.freecomputer.InteriorClassesActivity">
 
     <GridView
         android:id="@+id/grid"

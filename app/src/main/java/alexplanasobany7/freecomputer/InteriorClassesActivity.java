@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class InteriorClasses extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class InteriorClassesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     private int fila, columna, est;
     private boolean estat;
     private String sala, nomPC, edifici;
@@ -55,7 +55,7 @@ public class InteriorClasses extends AppCompatActivity implements AdapterView.On
         posi = position;
         int files = position / 6;
         int col = position % 6; // 192.168.1.38 Es la IP del Mac, si traballes amb emulador 10.0.2.2
-        new ConsultarDades().execute("http://10.0.2.2/FreeComputer/consultarPC.php?fila="
+        new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
                 +(files+1)+"&columna="+(col+1)+"&sala="+sala);
     }
 
