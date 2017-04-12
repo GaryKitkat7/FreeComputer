@@ -2,10 +2,12 @@ package alexplanasobany7.freecomputer;
 
 
 import android.content.Intent;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
@@ -22,7 +24,11 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     public static String[] sales;
     private int fila008 = 5, columna008 = 6;
     public static String sala = "";
+    private RectF menjador;
+    public String saleta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
                         +(f+1)+"&columna="+(c+1)+"&sala="+Sala010);
             }
         }
-
-
+        MapaPrincipal principal = new MapaPrincipal(this);
+        saleta = principal.getSala();
     }
 
     /*public void EntraClasse (View view){
