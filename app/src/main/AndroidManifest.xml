@@ -25,7 +25,6 @@
         </activity>
         <activity android:name=".InteriorClassesActivity" />
         <activity android:name=".ReservarPC" />
-        <activity android:name=".Autentificacio"></activity>
     </application>
 
 </manifest>

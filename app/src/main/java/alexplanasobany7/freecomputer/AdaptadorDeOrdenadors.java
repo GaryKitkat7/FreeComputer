@@ -22,12 +22,12 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return Ordenadors.ITEMS.length; //Retorna longitud
+        return Ordenadors.ITEMS.length;
     }
 
     @Override
     public Ordenadors getItem(int position) {
-        return Ordenadors.ITEMS[position]; //Retorna l'item de la posició que rep per parametre
+        return Ordenadors.ITEMS[position];
     }
 
     @Override

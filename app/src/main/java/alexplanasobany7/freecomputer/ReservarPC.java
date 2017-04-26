@@ -44,13 +44,13 @@ public class ReservarPC extends AppCompatActivity {
         textImatge = (TextView)findViewById(R.id.titoltext);
         Reserva = (Button)findViewById(R.id.reserva);
 
-        itemOrdenador = Ordenadors.ITEMS[pos];
+        //itemOrdenador = Ordenadors.ITEMS[pos];
 
         imatgePC.setImageResource(itemOrdenador.getIdDrawable());
         textImatge.setText(nomPC);
     }
 
-    public void reservar(View v) {
+    /*public void reservar(View v) {
         if (!Ordenadors.ITEMS[pos].getReserva()) {
             Ordenadors.ITEMS[pos].PosarFotoReserva(pos);
             Intent intent = new Intent(this, MainActivity.class);
@@ -62,5 +62,5 @@ public class ReservarPC extends AppCompatActivity {
             intent.putExtra("pos", pos);
             startActivity(intent);
         }
-    }
+    }*/
 }

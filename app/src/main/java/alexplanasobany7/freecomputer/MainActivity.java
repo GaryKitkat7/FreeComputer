@@ -33,21 +33,16 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private String Sala008 = "008", Sala010 = "010";
-    private TextView texte;
-    private String estat;
     public int i = 0;
     public static String[] sales;
     private int fila008 = 5, columna008 = 6;
-    public static String sala = "";
-    private RectF menjador;
-    public String saleta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MapaPrincipal mapaPrincipal = new MapaPrincipal(this);
+        final MapaPrincipal mapaPrincipal = new MapaPrincipal(this);
         ScrollView scrollView = new ScrollView(this);
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
 
@@ -55,9 +50,47 @@ public class MainActivity extends AppCompatActivity {
         scrollView.addView(mapaPrincipal);
         setContentView(horizontalScrollView);
 
+
+        /*horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float touchX = event.getX();
+                float touchY = event.getY();
+                recta = mapaPrincipal.PassarRectangle();
+                rects = mapaPrincipal.PassarRectangles();
+                int action = event.getAction();
+                switch (action){
+                    case MotionEvent.ACTION_UP:
+                        Log.d("AlexPlana", "Apretat");
+                        for(RectF rect : recta){
+                            Log.d("Alexxx", String.valueOf(rect));
+                            Log.d("PosicioX", String.valueOf(touchX));
+                            Log.d("PosicioY", String.valueOf(touchY));
+                            if(rect.contains(touchX,touchY)){
+                                Log.d("Plana", "Entrar a la Clase");
+                                saleta = rects.get(rect);
+                                Log.d("La sala es:",saleta);
+                                startActivity(new Intent(MainActivity.this,InteriorClassesActivity.class));
+                                //TODO: No aconsegueixo fer el Intent per accedir a la pantalla dels ordenadors
+                        /*Intent intent = new Intent(this.context.getApplicationContext(), InteriorClassesActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        this.context.getApplicationContext().startActivity(intent);*//*
+
+                    }
+                }
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("Alex", "Desplaçant la pantalla");
+                break;
+                }
+                return true;
+            }
+        });*/
+
+
+
         sales= new String[300];
-        /*Sala008 = (Button)findViewById(R.id.Classe008);
-        Sala010 = (Button) findViewById(R.id.Classe010);*/
 
         for (int f = 0; f < fila008; f++){
             for (int c = 0; c < columna008; c++){
@@ -72,22 +105,9 @@ public class MainActivity extends AppCompatActivity {
                         +(f+1)+"&columna="+(c+1)+"&sala="+Sala010);
             }
         }
-        MapaPrincipal principal = new MapaPrincipal(this);
-        saleta = principal.getSala();
+
     }
 
-    /*public void EntraClasse (View view){
-        Button b = (Button)view;
-        if(b.getText().equals("008")){
-            sala = Sala008.getText().toString();
-        }else if(b.getText().equals("010")){
-            sala = Sala010.getText().toString();
-        }
-
-        Intent intent = new Intent(this, InteriorClassesActivity.class);
-        intent.putExtra("sala", sala);
-        startActivity(intent);
-    }*/
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override

@@ -1,6 +1,7 @@
 package alexplanasobany7.freecomputer;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,7 +34,8 @@ public class MapaPrincipal extends View {
     public Map<RectF, String> rectangles = new HashMap<>();
     public List<RectF> rectangle = new ArrayList<>();
     public String sala;
-    private Context context;
+    Context context;
+
 
     public MapaPrincipal(Context context) {
         super(context);
@@ -65,7 +67,17 @@ public class MapaPrincipal extends View {
         rectangle.add(sala010);
         rectangles.put(sala008, "008");
         rectangles.put(sala010, "010");
+
     }
+
+    public Map<RectF, String> PassarRectangles(){
+        return rectangles;
+    }
+
+    public List<RectF> PassarRectangle(){
+        return rectangle;
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -83,9 +95,12 @@ public class MapaPrincipal extends View {
                         Log.d("Plana", "Entrar a la Clase");
                         sala = rectangles.get(rect);
                         Log.d("La sala es:",sala);
+                        startActivity();
+
+                        //Intent intent = new Intent(getContext(),InteriorClassesActivity)
 
                         //TODO: No aconsegueixo fer el Intent per accedir a la pantalla dels ordenadors
-                        /*Intent intent = new Intent(this.context.getApplicationContext(), InteriorClassesActivity.class);
+                        /*Intent intent = new Intent(this.context .getApplicationContext(), InteriorClassesActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         this.context.getApplicationContext().startActivity(intent);*/
 
@@ -100,9 +115,13 @@ public class MapaPrincipal extends View {
         return true;
     }
 
-    public String getSala() {
-        return sala;
+    private void startActivity() {
+        Intent myIntent = new Intent(getContext(),InteriorClassesActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.putExtra("sala", sala);
+        getContext().startActivity(myIntent);
     }
+
 
     @Override
     public void onDraw(Canvas canvas){

@@ -43,7 +43,6 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         intent = new Intent(this,ReservarPC.class);
         sala = getIntent().getExtras().getString("sala");
 
-
         final GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
         gridview.setOnItemClickListener(this);
