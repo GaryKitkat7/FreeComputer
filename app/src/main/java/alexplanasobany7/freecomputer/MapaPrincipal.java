@@ -30,7 +30,7 @@ import java.util.Map;
 public class MapaPrincipal extends View {
 
     private Paint paint, paintLletres, areaRestringida;
-    private RectF menjador, sala008, sala010;
+    private RectF menjador, sala008, sala010, sala011, sala012, sala017,sala018;
     public Map<RectF, String> rectangles = new HashMap<>();
     public List<RectF> rectangle = new ArrayList<>();
     public String sala;
@@ -43,13 +43,13 @@ public class MapaPrincipal extends View {
         // INICIALITZAR TOTS ELS PAINTS
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(Color.BLUE);
+        paint.setColor(Color.BLACK);
         paint.setStrokeWidth(16.0f);
         paint.setStyle(Paint.Style.STROKE);
 
         paintLletres = new Paint();
         paintLletres.setAntiAlias(true);
-        paintLletres.setColor(Color.BLUE);
+        paintLletres.setColor(Color.BLACK);
         paintLletres.setStyle(Paint.Style.FILL);
         paintLletres.setTextSize(50);
 
@@ -59,6 +59,8 @@ public class MapaPrincipal extends View {
         areaRestringida.setStyle(Paint.Style.FILL);
         areaRestringida.setStrokeWidth(16.0f);
 
+
+        //TODO: COMPLETAR LES SALES QUE FALTEN
         menjador = new RectF(508, 1208, 1992, 2292);
         sala008 = new RectF(108, 2408, 392, 2692);
         sala010 = new RectF(108,1508,392,1892);
@@ -69,15 +71,6 @@ public class MapaPrincipal extends View {
         rectangles.put(sala010, "010");
 
     }
-
-    public Map<RectF, String> PassarRectangles(){
-        return rectangles;
-    }
-
-    public List<RectF> PassarRectangle(){
-        return rectangle;
-    }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -96,13 +89,6 @@ public class MapaPrincipal extends View {
                         sala = rectangles.get(rect);
                         Log.d("La sala es:",sala);
                         startActivity();
-
-                        //Intent intent = new Intent(getContext(),InteriorClassesActivity)
-
-                        //TODO: No aconsegueixo fer el Intent per accedir a la pantalla dels ordenadors
-                        /*Intent intent = new Intent(this.context .getApplicationContext(), InteriorClassesActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        this.context.getApplicationContext().startActivity(intent);*/
 
                     }
                 }
@@ -188,7 +174,7 @@ public class MapaPrincipal extends View {
         canvas.drawLine(1300,1100,2008,1100,paint);
         canvas.drawLine(2000,792,2000,1108,paint);
 
-        // Pati + Menjador
+        //Pati + Menjador
         canvas.drawLine(500,1200,2000,1200,paint);
         canvas.drawLine(500,2300,2000,2300,paint);
         canvas.drawLine(500,1192,500,2308,paint);

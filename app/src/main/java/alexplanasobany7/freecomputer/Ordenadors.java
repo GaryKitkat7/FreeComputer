@@ -10,23 +10,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by alexplanasobany on 22/2/17.
  */
 
 public class Ordenadors {
-    private String nombre;
+    private String nombre, Sala;
     private int idDrawable;
     private boolean Reserva;
-    /*private int N = 30, files, columnes, cont = 0, i = 0;
-    private String[] SalaActual = new String[10];
-    private Ordenadors[] ITEMS = new Ordenadors[30];*/
+    private int N ,files, columnes;
+    public int cont = 0;
+    //private String[] SalaActual = new String[30];
+    private Ordenadors[] ITEMS = new Ordenadors[30];
+    public static String[] EstatsSales = PantallaEsperaPrincipalActivity.sales;
+    public String[] SalaActual;
+
 
 
     public Ordenadors(String nombre, int idDrawable, boolean Reserva) {
@@ -35,31 +38,35 @@ public class Ordenadors {
         this.Reserva = Reserva;
     }
 
-    /*public void ObteSala(String sala){
+    public Ordenadors(String sala) {
         this.Sala = sala;
-    }
-
-    public void OmpleSala() {
+        Log.d("Sala", "  "+Sala);
         if (Sala.equals("008") || Sala.equals("010")) {
             N = 30;
             files = 5;
             columnes = 6;
             SalaActual = new String[N];
             if (Sala.equals("008")) {
-                for (int f = 0; f < files; f++) {
-                    for (int c = 0; c < columnes; c++) {
-                        new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                                + (f + 1) + "&columna=" + (c + 1) + "&sala=" + Sala);
-                    }
+                for(int j = 0; j < N; j++){
+                    SalaActual[j] = EstatsSales[j];
                 }
+                /*for (int f = 0; f < files; f++) {
+                    for (int c = 0; c < columnes; c++) {
+                        new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="+
+                                (f+1)+"&columna="+(c+1)+"&sala="+Sala);
+                    }
+                }*/
             } else {
                 SalaActual = new String[N];
-                for (int f = 0; f < files; f++) {
+                for(int j = 0; j < N; j++){
+                    SalaActual[j] = EstatsSales[j];
+                }
+                /*for (int f = 0; f < files; f++) {
                     for (int c = 0; c < columnes; c++) {
                         new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
                                 + (f + 1) + "&columna=" + (c + 1) + "&sala=" + Sala);
                     }
-                }
+                }*/
             }
 
         } else if (Sala.equals("011")) {
@@ -77,12 +84,16 @@ public class Ordenadors {
             columnes = 5;
         }
 
+        Log.d("VectorSAlaActual", Arrays.toString(SalaActual));
+
+        int i = 0;
         for (int fi = 0; fi < files; fi++) {
             for (int col = 0; col < columnes; col++) {
+                Log.d("SaLa_Actual", String.valueOf(SalaActual[0]));
                 if (SalaActual[i].equals("0")) {
-                    ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true, Sala);
+                    ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
                 } else if (SalaActual[i].equals("1")) {
-                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false, Sala);
+                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false);
                 }
                 i++;
             }
@@ -95,7 +106,7 @@ public class Ordenadors {
 
     public Ordenadors getPosicio(int position){
         return ITEMS[position];
-    }*/
+    }
 
     public String getNombre() {
         return nombre; //Retorna el nom del PC
@@ -113,18 +124,8 @@ public class Ordenadors {
         return nombre.hashCode();
     }
 
-    /*public void PosarFotoReserva(int posicio){
-        Ordenadors.ITEMS[posicio] = new Ordenadors("Lliure", R.drawable.pc, true, Sala);
-    }
-
-    public void PosarFotoNoReserva(int posicio){
-        Ordenadors.ITEMS[posicio] = new Ordenadors("Reservat", R.drawable.no_pc, false, Sala);
-    }*/
-
-    public static String Sala = "008";
-    public static String[] EstatsSales = MainActivity.sales;
-    public static String[] SalaActual;
-    public static int N, files, columnes;
+    /*public static String Sala = "008";*/
+    /*public static int N, files, columnes;
 
     static {
         if (Sala.equals("008") || Sala.equals("010")) {
@@ -174,7 +175,7 @@ public class Ordenadors {
                 i++;
             }
         }
-    }
+    }*/
 
     /*public static Ordenadors getItem(int id) {
         for (Ordenadors item : ITEMS) {
@@ -185,7 +186,7 @@ public class Ordenadors {
         return null;
     }*/
 
-    private class ConsultarDades extends AsyncTask<String, Void, String> {
+    /*private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -201,8 +202,8 @@ public class Ordenadors {
             try {
                 ja = new JSONArray(result);
                 Log.d("reposta", "La resposta es: " + ja);
-                /*SalaActual[cont] = ja.getString(5);
-                cont++;*/
+                SalaActual[cont] = ja.getString(5);
+                cont++;
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -247,5 +248,5 @@ public class Ordenadors {
         reader.read(buffer);
         return new String(buffer);
     }
-
+*/
 }

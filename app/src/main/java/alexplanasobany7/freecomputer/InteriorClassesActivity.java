@@ -1,6 +1,7 @@
 package alexplanasobany7.freecomputer;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +9,11 @@ import android.os.Bundle;
 import android.transition.Explode;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -42,9 +45,13 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         setContentView(R.layout.activity_interior_classes);
         intent = new Intent(this,ReservarPC.class);
         sala = getIntent().getExtras().getString("sala");
+        //Ordenadors ordenadors = new Ordenadors(sala);
 
-        final GridView gridview = (GridView) findViewById(R.id.grid);
+
+        GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setAdapter(new AdaptadorDeOrdenadors(this));
+        //TODO: NO PASA LA SALA
+        //gridview.setAdapter(new AdaptadorDeOrdenadors(this,sala));
         gridview.setOnItemClickListener(this);
 
     }
@@ -54,11 +61,11 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         posi = position;
         int files = position / 6;
         int col = position % 6; // 192.168.1.38 Es la IP del Mac, si traballes amb emulador 10.0.2.2
-        new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                +(files+1)+"&columna="+(col+1)+"&sala="+sala);
+        /*new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
+                +(files+1)+"&columna="+(col+1)+"&sala="+sala);*/
     }
 
-    private class ConsultarDades extends AsyncTask<String, Void, String> {
+    /*private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -125,7 +132,7 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         reader.read(buffer);
         return new String(buffer);
     }
-
+*/
 }
 
 

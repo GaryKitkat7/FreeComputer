@@ -12,15 +12,32 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class AdaptadorDeOrdenadors extends BaseAdapter {
     private Context context;
+    private String sala = "008";
+
 
     public AdaptadorDeOrdenadors(Context context) {
+        super();
         this.context = context;
+        //this.sala = Sala;
+    }
+
+    private Ordenadors ordenadors = new Ordenadors(sala);
+
+    public int getCount() {
+        return ordenadors.getLongitud();
     }
 
     @Override
+    public Ordenadors getItem(int position) {
+        return ordenadors.getPosicio(position);
+    }
+
+    /*@Override
     public int getCount() {
         return Ordenadors.ITEMS.length;
     }
@@ -28,7 +45,7 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
     @Override
     public Ordenadors getItem(int position) {
         return Ordenadors.ITEMS[position];
-    }
+    }*/
 
     @Override
     public long getItemId(int position) {
@@ -48,7 +65,7 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
         ImageView imagenCoche = (ImageView) view.findViewById(R.id.imatgePC); //Imatge Variable a cada posicio
         TextView nombreCoche = (TextView) view.findViewById(R.id.nomPC); //Nom Variable a cada posicio
 
-        final Ordenadors item = getItem(position);
+        Ordenadors item = getItem(position);
         imagenCoche.setImageResource(item.getIdDrawable());
         nombreCoche.setText(item.getNombre());
 
