@@ -12,13 +12,4 @@
         android:scaleType="fitXY"
         android:src="@drawable/pantalla" />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp" />
-
 </RelativeLayout>

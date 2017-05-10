@@ -44,11 +44,11 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_pantalla_espera_principal);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        /*progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.getIndeterminateDrawable()
-                .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);*/
 
-        sales= new String[300];
+        sales= new String[160];
 
         for (int f = 0; f < fila5; f++){
             for (int c = 0; c < columna6; c++){

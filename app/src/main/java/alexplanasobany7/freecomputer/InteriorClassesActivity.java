@@ -45,13 +45,11 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         setContentView(R.layout.activity_interior_classes);
         intent = new Intent(this,ReservarPC.class);
         sala = getIntent().getExtras().getString("sala");
-        //Ordenadors ordenadors = new Ordenadors(sala);
 
-
+        AdaptadorDeOrdenadors adaptadorDeOrdenadors = new AdaptadorDeOrdenadors(this,sala);
         GridView gridview = (GridView) findViewById(R.id.grid);
-        gridview.setAdapter(new AdaptadorDeOrdenadors(this));
-        //TODO: NO PASA LA SALA
-        //gridview.setAdapter(new AdaptadorDeOrdenadors(this,sala));
+        gridview.setNumColumns(CalculaCol(sala));
+        gridview.setAdapter(adaptadorDeOrdenadors);
         gridview.setOnItemClickListener(this);
 
     }
@@ -63,6 +61,16 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         int col = position % 6; // 192.168.1.38 Es la IP del Mac, si traballes amb emulador 10.0.2.2
         /*new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
                 +(files+1)+"&columna="+(col+1)+"&sala="+sala);*/
+    }
+
+    public int CalculaCol(String sala){
+        int NCol;
+        if (sala.equals("008") || sala.equals("010")){
+            NCol = 6;
+        }else{
+            NCol = 5;
+        }
+        return NCol;
     }
 
     /*private class ConsultarDades extends AsyncTask<String, Void, String> {

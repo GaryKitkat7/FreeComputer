@@ -5,9 +5,11 @@ package alexplanasobany7.freecomputer;
  */
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,16 +19,17 @@ import java.util.ArrayList;
 
 public class AdaptadorDeOrdenadors extends BaseAdapter {
     private Context context;
-    private String sala = "008";
+    private String sala;
+    private Ordenadors ordenadors;
 
 
-    public AdaptadorDeOrdenadors(Context context) {
+    public AdaptadorDeOrdenadors(Context context, String Sala) {
         super();
         this.context = context;
-        //this.sala = Sala;
+        this.sala = Sala;
+        ordenadors = new Ordenadors(sala);
+        Log.d("SalaAdapter", sala);
     }
-
-    private Ordenadors ordenadors = new Ordenadors(sala);
 
     public int getCount() {
         return ordenadors.getLongitud();
@@ -36,16 +39,6 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
     public Ordenadors getItem(int position) {
         return ordenadors.getPosicio(position);
     }
-
-    /*@Override
-    public int getCount() {
-        return Ordenadors.ITEMS.length;
-    }
-
-    @Override
-    public Ordenadors getItem(int position) {
-        return Ordenadors.ITEMS[position];
-    }*/
 
     @Override
     public long getItemId(int position) {
@@ -66,6 +59,7 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
         TextView nombreCoche = (TextView) view.findViewById(R.id.nomPC); //Nom Variable a cada posicio
 
         Ordenadors item = getItem(position);
+        Log.d("Pos",String.valueOf(position));
         imagenCoche.setImageResource(item.getIdDrawable());
         nombreCoche.setText(item.getNombre());
 

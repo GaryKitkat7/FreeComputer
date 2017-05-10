@@ -2,6 +2,7 @@ package alexplanasobany7.freecomputer;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -9,12 +10,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +33,8 @@ import java.util.Map;
  * Created by alexplanasobany on 10/4/17.
  */
 
-public class MapaPrincipal extends View {
+public class MapaPrincipal extends View{
+
 
     private Paint paint, paintLletres, areaRestringida;
     private RectF menjador, sala008, sala010, sala011, sala012, sala017,sala018;
@@ -35,6 +42,7 @@ public class MapaPrincipal extends View {
     public List<RectF> rectangle = new ArrayList<>();
     public String sala;
     Context context;
+    public String[] OrdenadorsLLiures = PantallaEsperaPrincipalActivity.sales;
 
 
     public MapaPrincipal(Context context) {
@@ -64,11 +72,24 @@ public class MapaPrincipal extends View {
         menjador = new RectF(508, 1208, 1992, 2292);
         sala008 = new RectF(108, 2408, 392, 2692);
         sala010 = new RectF(108,1508,392,1892);
+        sala012 = new RectF(108,808,396,1092);
+        sala011 = new RectF(108,1108,392,1492);
+        sala017 = new RectF(908,108,1392,392);
+        sala018 = new RectF(1408,108,1892,392);
 
         rectangle.add(sala008);
         rectangle.add(sala010);
+        rectangle.add(sala011);
+        rectangle.add(sala012);
+        rectangle.add(sala017);
+        rectangle.add(sala018);
         rectangles.put(sala008, "008");
         rectangles.put(sala010, "010");
+        rectangles.put(sala011, "011");
+        rectangles.put(sala012, "012");
+        rectangles.put(sala017, "017");
+        rectangles.put(sala018, "018");
+
 
     }
 
@@ -97,6 +118,16 @@ public class MapaPrincipal extends View {
             case MotionEvent.ACTION_MOVE:
                 Log.d("Alex", "Desplaçant la pantalla");
                 break;
+
+            case MotionEvent.ACTION_DOWN:
+                for(RectF rect : rectangle){
+                    if(rect.contains(touchX,touchY)){
+                        sala = rectangles.get(rect);
+                        Toast toast = Toast.makeText(context,CalcularNumeroClasse(
+                                OrdenadorsLLiures,sala),Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
         }
         return true;
     }
@@ -180,11 +211,62 @@ public class MapaPrincipal extends View {
         canvas.drawLine(500,1192,500,2308,paint);
         canvas.drawLine(2000,1192,2000,2308,paint);
         canvas.drawRect(menjador,areaRestringida);
+
+        //TODO: COM SÉ QUINA CLASSE ESTÀ OBERTA. CONSULTAR BBDD??
     }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(2800, 2800);
+    }
+
+    public String CalcularNumeroClasse(String[] vector, String sala){
+        String ResultatFinal = "";
+        int i = 0;
+        if(sala.equals("008")){
+            for(int j = 0; j < 30; j++){
+                if(vector[j].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/30";
+        }else if(sala.equals("010")){
+            for(int j = 0; j < 30; j++){
+                if(vector[j+30].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/30";
+        }else if(sala.equals("011")){
+            for(int j = 0; j < 25; j++){
+                if(vector[j+60].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/25";
+        }else if (sala.equals("012")){
+            for(int j = 0; j < 20; j++){
+                if(vector[j+85].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/20";
+        }else if (sala.equals("017")){
+            for(int j = 0; j < 20; j++){
+                if(vector[j+105].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/20";
+        }else if (sala.equals("018")){
+            for(int j = 0; j < 20; j++){
+                if(vector[j+125].equals("1")){
+                    i++;
+                }
+            }
+            ResultatFinal = String.valueOf(i) + "/20";
+        }
+        return ResultatFinal;
     }
 }
