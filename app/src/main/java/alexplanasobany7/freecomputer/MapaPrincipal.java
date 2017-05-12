@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
@@ -66,7 +67,6 @@ public class MapaPrincipal extends View{
         areaRestringida.setColor(Color.rgb(50,50,50));
         areaRestringida.setStyle(Paint.Style.FILL);
         areaRestringida.setStrokeWidth(16.0f);
-
 
         //TODO: COMPLETAR LES SALES QUE FALTEN
         menjador = new RectF(508, 1208, 1992, 2292);

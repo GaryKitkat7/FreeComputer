@@ -6,6 +6,8 @@
     <string name="Lliure">Lliure</string>
     <string name="Reservat">Reservat</string>
     <string name="title_activity_autentificacio">Sign in</string>
+    <string name="Mapa">Mapa UPC</string>
+    <string name="Llista">Llista Classes</string>
 
 
     <!-- Strings related to login -->

@@ -36,6 +36,7 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
     }
 
     @Override
+    //Cambiar el tipus a Ordenador
     public Ordenadors getItem(int position) {
         return ordenadors.getPosicio(position);
     }

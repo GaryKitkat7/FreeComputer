@@ -2,7 +2,7 @@
 <resources>
 
     <color name="darkPrimaryColor">#bf00a2ff</color>
-    <color name="primaryColor">#00ffff</color>
+    <color name="primaryColor">#0000ff</color>
     <color name="accentColor">#00BCD4</color>
     <color name="backgroundColor">#ffffff</color>
     <color name="background_footer">#90dcdbdb</color>
