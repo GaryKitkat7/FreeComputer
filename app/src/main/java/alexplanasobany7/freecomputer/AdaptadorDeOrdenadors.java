@@ -19,15 +19,17 @@ import java.util.ArrayList;
 
 public class AdaptadorDeOrdenadors extends BaseAdapter {
     private Context context;
+    private String[] estatSales;
     private String sala;
     private Ordenadors ordenadors;
 
 
-    public AdaptadorDeOrdenadors(Context context, String Sala) {
+    public AdaptadorDeOrdenadors(Context context, String Sala, String[] EstatSales) {
         super();
         this.context = context;
         this.sala = Sala;
-        ordenadors = new Ordenadors(sala);
+        this.estatSales = EstatSales;
+        ordenadors = new Ordenadors(sala, estatSales);
         Log.d("SalaAdapter", sala);
     }
 

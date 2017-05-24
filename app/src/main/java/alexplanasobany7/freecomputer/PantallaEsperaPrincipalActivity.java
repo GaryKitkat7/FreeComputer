@@ -1,17 +1,30 @@
 package alexplanasobany7.freecomputer;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,14 +42,18 @@ import java.util.TimerTask;
 
 public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
-    private static final long TEMPS_ESPERAR = 9000;
+    private static final long TEMPS_ESPERAR = 1000;
     public int i = 0;
-    public static String[] sales;
+    public int tipusPantalla, NOTIS;
+    public boolean notis;
+//    public int KEY;
+    public String[] sales;
+    public static String[] Sales = {"008","010","011","012","017","018"};
     private int fila5 = 5, columna6 = 6, columna5 = 5, fila4 = 4;
     private String Sala008 = "008", Sala010 = "010", Sala011 = "011", Sala012 = "012";
     private String Sala017 = "017", Sala018 = "018";
-    private ProgressDialog progressDialog;
     private ProgressBar progressBar;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,63 +61,65 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_pantalla_espera_principal);
-        /*progressBar = (ProgressBar)findViewById(R.id.progressBar);
+//        KEY = getIntent().getExtras().getInt("KEY");
+
+        imageView = (ImageView)findViewById(R.id.imatge_espera);
+        Glide.with(this).load(R.drawable.pantprincipal).asBitmap().into(imageView);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.getIndeterminateDrawable()
-                .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);*/
+                .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
-        sales= new String[160];
 
-        for (int f = 0; f < fila5; f++){
-            for (int c = 0; c < columna6; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala008);
-            }
-        }
+        sales= new String[152];
 
-        for (int f = 0; f < fila5; f++){
-            for (int c = 0; c < columna6; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala010);
-            }
-        }
-
-        for (int f = 0; f < fila5; f++){
-            for (int c = 0; c < columna5; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala011);
-            }
-        }
-
-        for (int f = 0; f < fila4; f++){
-            for (int c = 0; c < columna5; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala012);
-            }
-        }
-
-        for (int f = 0; f < fila4; f++){
-            for (int c = 0; c < columna5; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala017);
-            }
-        }
-
-        for (int f = 0; f < fila4; f++){
-            for (int c = 0; c < columna5; c++){
-                new ConsultarDades().execute("http://95.85.16.142/consultarPC.php?fila="
-                        +(f+1)+"&columna="+(c+1)+"&sala="+Sala018);
-            }
+        for(int z = 0; z < 3; z++){
+            String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
+            new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
+                    "&sala2="+Sala2);
         }
 
 
-
-        TimerTask timerTask = new TimerTask() {
+        final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
 
-                Intent intent = new Intent().setClass(
-                        PantallaEsperaPrincipalActivity.this,MainActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(PantallaEsperaPrincipalActivity.this);
+
+                StringBuilder builder = new StringBuilder();
+
+                tipusPantalla = Integer.parseInt(String.valueOf(builder.append(
+                        sharedPrefs.getString("PrefTipusPantalla", "NULL"))));
+                //notis = Boolean.parseBoolean(String.valueOf(builder.append(sharedPrefs.getString("PrefTipusPantalla", "NULL"))));
+
+                builder.append("\n Pantalla: " +
+                        sharedPrefs.getString("PrefTipusPantalla", "NULL"));
+
+                builder.append("\n Notificacions: " +
+                        sharedPrefs.getBoolean("PrefNotificacions", false));
+
+                Log.d("gknrkgnre", String.valueOf(tipusPantalla));
+
+
+                if(tipusPantalla == 0){
+
+                }else if(tipusPantalla == 1){
+                    Intent intent = new Intent().setClass(
+                            PantallaEsperaPrincipalActivity.this,MainActivity.class);
+                    intent.putExtra("Sales",sales);
+                    startActivity(intent);
+                }else if(tipusPantalla == 2){
+                    Intent intent = new Intent().setClass(
+                            PantallaEsperaPrincipalActivity.this,LlistaClassesActivity.class);
+                    intent.putExtra("Sales",sales);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent().setClass(
+                            PantallaEsperaPrincipalActivity.this,MainActivity.class);
+                    intent.putExtra("Sales",sales);
+                    startActivity(intent);
+                }
+
 
                 finish();
             }
@@ -125,8 +144,13 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
             JSONArray ja;
             try {
                 ja = new JSONArray(result);
-                sales[i] = ja.getString(5);
-                i++;
+                Log.d("JASONNNN", String.valueOf(ja.length()));
+                for(int j = 0; j < ja.length(); j++){
+                    String substring = ja.getString(j);
+                    sales[i] = substring.substring(2,3);
+                    i++;
+                }
+
                 Log.d("ALEXPLANA1", Arrays.toString(sales));
 
             } catch (JSONException e) {

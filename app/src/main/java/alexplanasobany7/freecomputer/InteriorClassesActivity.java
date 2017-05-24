@@ -38,6 +38,7 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
     private String sala, nomPC, edifici;
     private Intent intent;
     private int posi;
+    private String[] EstatSales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,9 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         setContentView(R.layout.activity_interior_classes);
         intent = new Intent(this,ReservarPC.class);
         sala = getIntent().getExtras().getString("sala");
+        EstatSales = getIntent().getExtras().getStringArray("Sales");
 
-        AdaptadorDeOrdenadors adaptadorDeOrdenadors = new AdaptadorDeOrdenadors(this,sala);
+        AdaptadorDeOrdenadors adaptadorDeOrdenadors = new AdaptadorDeOrdenadors(this,sala,EstatSales);
         GridView gridview = (GridView) findViewById(R.id.grid);
         gridview.setNumColumns(CalculaCol(sala));
         gridview.setAdapter(adaptadorDeOrdenadors);
@@ -73,7 +75,7 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         return NCol;
     }
 
-    /*private class ConsultarDades extends AsyncTask<String, Void, String> {
+    private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -89,13 +91,14 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
             try {
                 ja = new JSONArray(result);
                 Log.d("reposta", "La resposta es: " + ja);
-                intent.putExtra("pos", posi);
+
+                /*intent.putExtra("pos", posi);
                 intent.putExtra("sala", sala);
                 intent.putExtra("fila", ja.getInt(2));
                 intent.putExtra("columna", ja.getInt(3));
                 intent.putExtra("nomPC", ja.getString(4));
                 intent.putExtra("estat", ja.getInt(5));
-                startActivity(intent);
+                startActivity(intent);*/
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -140,7 +143,6 @@ public class InteriorClassesActivity extends AppCompatActivity implements Adapte
         reader.read(buffer);
         return new String(buffer);
     }
-*/
 }
 
 

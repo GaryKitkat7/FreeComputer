@@ -1,10 +1,13 @@
 package alexplanasobany7.freecomputer;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,23 +21,43 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.security.AccessController.getContext;
 
 public class LlistaClassesActivity extends AppCompatActivity{
 
     private ListView LlistaAULAPCs;
+    public String[] sales;
+    public int i = 0;
+    ProgressDialog progressDialog;
+    public String[] Sales = PantallaEsperaPrincipalActivity.Sales;
     private ArrayList<ItemLlistaClases> arrayList;
     private AdaptadorDeLaLlistaPCs adaptadorDeLaLlistaPCs;
-    public String[] OrdLLiures = PantallaEsperaPrincipalActivity.sales;
+    public String[] OrdLLiures;
     private String Sala;
+    public int KEY_LLISTA = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_llista_classes);
+        OrdLLiures = getIntent().getExtras().getStringArray("Sales");
+        Log.d("Ordinadors Lliures", Arrays.toString(OrdLLiures));
 
         LlistaAULAPCs = (ListView) findViewById(R.id.Llista);
         arrayList = new ArrayList<>();
@@ -60,6 +83,7 @@ public class LlistaClassesActivity extends AppCompatActivity{
 
                 Intent intent = new Intent(getApplicationContext(), InteriorClassesActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("Sales", OrdLLiures);
                 intent.putExtra("sala", Sala);
                 getApplicationContext().startActivity(intent);
             }
@@ -135,18 +159,157 @@ public class LlistaClassesActivity extends AppCompatActivity{
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+        int id = menuItem.getItemId();
+
+        if (id == R.id.Configuracio){
+            Intent intent = new Intent(this, UserSettingsActivity.class);
+            startActivity(intent);
+        }else{
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setMessage("Actualitzant...");
+            progressDialog.setCancelable(false);
+            progressDialog.setMax(100);
+            progressDialog.setProgress(0);
+            progressDialog.show();
+
+            sales= new String[151];
+
+            for(int z = 0; z < 3; z++){
+                String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
+                new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
+                        "&sala2="+Sala2);
+            }
+
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    progressDialog.dismiss();
+                }
+            };
+
+            Timer timer = new Timer();
+            timer.schedule(timerTask,1500);
+        }
+        return super.onOptionsItemSelected(menuItem);
+
+    }
+
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.Mapa) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("Sales", OrdLLiures);
             startActivity(intent);
             return true;
-        } else {
+        } else if(id == R.id.Llista){
             Intent intent = new Intent(this, LlistaClassesActivity.class);
+            intent.putExtra("Sales", OrdLLiures);
             startActivity(intent);
+        }else{
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setMessage("Actualitzant...");
+            progressDialog.setCancelable(false);
+            progressDialog.setMax(100);
+            progressDialog.setProgress(0);
+            progressDialog.show();
+
+            sales= new String[151];
+
+            for(int z = 0; z < 3; z++){
+                String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
+                new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
+                        "&sala2="+Sala2);
+            }
+
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    progressDialog.dismiss();
+                    Intent intent = new Intent(getApplicationContext(), LlistaClassesActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("Sales", sales);
+                    startActivity(intent);
+                }
+            };
+
+            Timer timer = new Timer();
+            timer.schedule(timerTask,3000);
         }
 
         return super.onOptionsItemSelected(item);
+    }*/
+
+    private class ConsultarDades extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "URL incorrecta";
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            JSONArray ja;
+            try {
+                ja = new JSONArray(result);
+                Log.d("JASONNNN", String.valueOf(ja.length()));
+                for(int j = 0; j < ja.length(); j++){
+                    String substring = ja.getString(j);
+                    sales[i] = substring.substring(2,3);
+                    i++;
+                }
+
+                Log.d("ALEXPLANA1", Arrays.toString(sales));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("reposta", "No ENtRAAA");
+            }
+        }
     }
+
+    private String downloadUrl(String myurl) throws IOException {
+        myurl = myurl.replace(" ", "%20");
+        InputStream stream = null;
+        int len = 500;
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(3000);
+            connection.setConnectTimeout(3000);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            // Open communications link (network traffic occurs here).
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            Log.d("reposta", "La resposta es: " + responseCode);
+            // Retrieve the response body as an InputStream.
+            stream = connection.getInputStream();
+
+            //Convertir el InputString a String
+            String ContentAsString = readIt(stream, len);
+            return ContentAsString;
+
+        } finally {
+            // Close Stream and disconnect HTTPS connection.
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
+    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
+    }
+
 }

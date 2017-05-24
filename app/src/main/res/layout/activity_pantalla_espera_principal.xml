@@ -5,11 +5,21 @@
     android:layout_height="match_parent"
     tools:context=".PantallaEsperaPrincipalActivity" >
 
+
     <ImageView
+        android:id="@+id/imatge_espera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/app_name"
-        android:scaleType="fitXY"
-        android:src="@drawable/pantalla" />
+        android:scaleType="centerCrop"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="124dp"
+        android:layout_marginBottom="21dp"
+        android:id="@+id/progressBar" />
 
 </RelativeLayout>

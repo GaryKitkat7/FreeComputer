@@ -25,7 +25,7 @@ public class Ordenadors {
     private boolean Reserva;
     private int N ,files, columnes;
     private Ordenadors[] ITEMS;
-    public static String[] EstatsSales = PantallaEsperaPrincipalActivity.sales;
+    public String[] EstatsSales;
     public String[] SalaActual;
 
 
@@ -36,8 +36,9 @@ public class Ordenadors {
         this.Reserva = Reserva;
     }
 
-    public Ordenadors(String sala) {
+    public Ordenadors(String sala, String[] estatSales) {
         this.Sala = sala;
+        this.EstatsSales = estatSales;
         Log.d("Sala", "  "+Sala);
         if (Sala.equals("008") || Sala.equals("010")) {
             N = 30;
