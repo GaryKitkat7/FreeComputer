@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_opcions,menu);
+        getMenuInflater().inflate(R.menu.menu_opcions_2,menu);
         return true;
     }
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.Configuracio){
             Intent intent = new Intent(this, UserSettingsActivity.class);
             startActivity(intent);
-        }else{
+        }else if (id == R.id.Refresca){
             progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setMessage("Actualitzant...");
@@ -89,9 +89,10 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.setProgress(0);
             progressDialog.show();
 
-            sales= new String[151];
+            sales= new String[152];
 
             for(int z = 0; z < 3; z++){
+                i = 0;
                 String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
                 new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
                         "&sala2="+Sala2);
@@ -106,7 +107,12 @@ public class MainActivity extends AppCompatActivity {
 
             Timer timer = new Timer();
             timer.schedule(timerTask,1500);
+        }else{
+            Intent intent = new Intent(this, LlistaClassesActivity.class);
+            intent.putExtra("Sales", sales);
+            startActivity(intent);
         }
+
         return super.onOptionsItemSelected(menuItem);
 
     }

@@ -1,20 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <!--
+
     <item android:id="@+id/Mapa"
         android:title="@string/Mapa"
-        android:showAsAction="never" />
+        android:icon="@android:drawable/stat_notify_more"
+        android:showAsAction="always" />
 
-    <item android:id="@+id/Llista"
-        android:title="@string/Llista"
-        android:showAsAction="never" />
-    -->
     <item android:id="@+id/Configuracio"
         android:title="@string/Configuracio"
-        android:showAsAction="never"/>
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction="always" />
 
     <item android:id="@+id/Refresca"
         android:title="@string/Refrescar"
-        android:showAsAction="never"/>
+        android:showAsAction="always"
+        android:icon="@android:drawable/ic_popup_sync" />
 
 </menu>

@@ -382,7 +382,7 @@ public class MapaPrincipal extends View{
             }
             resfin = total - i;
             ResultatFinal = String.valueOf(resfin);
-        }/*else if (sala.equals("017")){
+        }else if (sala.equals("017")){
             for(int j = 0; j < 20; j++){
                 if(vector[j+105].equals("1")){
                     i++;
@@ -396,7 +396,7 @@ public class MapaPrincipal extends View{
                 }
             }
             ResultatFinal = String.valueOf(i) + "/20";
-        }*/
+        }
         return ResultatFinal;
     }
 

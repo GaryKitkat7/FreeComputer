@@ -44,8 +44,9 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
     private static final long TEMPS_ESPERAR = 1000;
     public int i = 0;
-    public int tipusPantalla, NOTIS;
+    public int tipusPantalla;
     public boolean notis;
+    public String NOTIS;
 //    public int KEY;
     public String[] sales;
     public static String[] Sales = {"008","010","011","012","017","018"};
@@ -71,6 +72,7 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
 
         sales= new String[152];
+        //new ConsultarDades().execute("http://95.85.16.142/ConsultarTot.php");
 
         for(int z = 0; z < 3; z++){
             String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
@@ -86,47 +88,51 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
                 SharedPreferences sharedPrefs = PreferenceManager
                         .getDefaultSharedPreferences(PantallaEsperaPrincipalActivity.this);
 
-                StringBuilder builder = new StringBuilder();
+                tipusPantalla = Integer.parseInt(sharedPrefs.getString("PrefTipusPantalla", "1"));
+                notis = sharedPrefs.getBoolean("PrefNotificacions",false);
 
-                tipusPantalla = Integer.parseInt(String.valueOf(builder.append(
-                        sharedPrefs.getString("PrefTipusPantalla", "NULL"))));
-                //notis = Boolean.parseBoolean(String.valueOf(builder.append(sharedPrefs.getString("PrefTipusPantalla", "NULL"))));
-
-                builder.append("\n Pantalla: " +
-                        sharedPrefs.getString("PrefTipusPantalla", "NULL"));
-
-                builder.append("\n Notificacions: " +
-                        sharedPrefs.getBoolean("PrefNotificacions", false));
-
-                Log.d("gknrkgnre", String.valueOf(tipusPantalla));
+                Log.d("TipusPantalla", String.valueOf(tipusPantalla));
+                Log.d("Notis", String.valueOf(notis));
 
 
                 if(tipusPantalla == 0){
-
-                }else if(tipusPantalla == 1){
+                    //TODO: ULTIMA PANTALLA
+                }else if(tipusPantalla == 1 && notis){
+                    IniciaServei();
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,MainActivity.class);
                     intent.putExtra("Sales",sales);
                     startActivity(intent);
-                }else if(tipusPantalla == 2){
+                }else if(tipusPantalla == 2 && notis){
+                    IniciaServei();
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,LlistaClassesActivity.class);
                     intent.putExtra("Sales",sales);
                     startActivity(intent);
-                }else {
+                }else if(tipusPantalla == 1 && !notis){
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,MainActivity.class);
                     intent.putExtra("Sales",sales);
                     startActivity(intent);
+                }else if (tipusPantalla == 2 && !notis){
+                    Intent intent = new Intent().setClass(
+                            PantallaEsperaPrincipalActivity.this,LlistaClassesActivity.class);
+                    intent.putExtra("Sales", sales);
+                    startActivity(intent);
                 }
-
-
                 finish();
             }
         };
 
         Timer timer = new Timer();
         timer.schedule(timerTask,TEMPS_ESPERAR);
+    }
+
+    public void IniciaServei(){
+        Intent intent = new Intent(this, ServeiConsultaBBDDActivity.class);
+        intent.setAction("alexplanasobany7.freecomputer.action.RUN_INTENT_SERVICE");
+        intent.putExtra("Sales",sales);
+        startService(intent);
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
@@ -144,14 +150,11 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
             JSONArray ja;
             try {
                 ja = new JSONArray(result);
-                Log.d("JASONNNN", String.valueOf(ja.length()));
                 for(int j = 0; j < ja.length(); j++){
                     String substring = ja.getString(j);
                     sales[i] = substring.substring(2,3);
                     i++;
                 }
-
-                Log.d("ALEXPLANA1", Arrays.toString(sales));
 
             } catch (JSONException e) {
                 e.printStackTrace();

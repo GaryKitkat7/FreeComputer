@@ -15,6 +15,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".ServeiConsultaBBDDActivity"
+            android:exported="false">
+        </service>
         <activity
             android:name=".PantallaEsperaPrincipalActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
