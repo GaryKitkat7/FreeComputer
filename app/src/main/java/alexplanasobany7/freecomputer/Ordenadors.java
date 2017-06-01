@@ -94,7 +94,7 @@ public class Ordenadors {
                 if (SalaActual[i].equals("0")) {
                     ITEMS[i] = new Ordenadors("Lliure", R.drawable.pc, true);
                 } else if (SalaActual[i].equals("1")) {
-                    ITEMS[i] = new Ordenadors("Reservat", R.drawable.no_pc, false);
+                    ITEMS[i] = new Ordenadors("Ocupat", R.drawable.pcgris2, false);
                 }
                 i++;
             }

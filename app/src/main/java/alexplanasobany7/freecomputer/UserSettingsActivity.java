@@ -13,10 +13,5 @@ public class UserSettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        /*SharedPreferences sharedPreferences = getSharedPreferences("Configuracio", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("PrefTipusPantalla","1");
-        editor.putBoolean("PrefNotificacions", false);
-        editor.commit();*/
     }
 }

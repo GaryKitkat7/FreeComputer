@@ -1,11 +1,18 @@
 package alexplanasobany7.freecomputer;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +24,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +53,6 @@ import java.util.logging.LogRecord;
 public class MainActivity extends AppCompatActivity {
 
     public String[] sales;
-    public int KEY_MAPA = 1;
     ProgressDialog progressDialog;
     public String[] Sales = PantallaEsperaPrincipalActivity.Sales;
     public int i = 0;
@@ -52,19 +63,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sales = getIntent().getExtras().getStringArray("Sales");
 
+        CrearMapa(sales);
 
-        //TODO: NO FUNCIONA, ES SUPERPOSA EL MAPA PRINCIPAL
-        /*TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("MAPA"));
-        tabLayout.addTab(tabLayout.newTab().setText("LLISTA"));*/
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServeiConsultaBBDDActivity.ACTION_RUN_ISERVICE);
 
-        final MapaPrincipal mapaPrincipal = new MapaPrincipal(this,sales);
-        ScrollView scrollView = new ScrollView(this);
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
-
-        horizontalScrollView.addView(scrollView);
-        scrollView.addView(mapaPrincipal);
-        setContentView(horizontalScrollView);
+        ResponseReceiver receiver = new ResponseReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
     }
 
     @Override
@@ -117,49 +122,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        int id = item.getItemId();
+    private void CrearMapa(String[] sales){
+        final MapaPrincipal mapaPrincipal = new MapaPrincipal(this,sales);
+        ScrollView scrollView = new ScrollView(this);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
 
-        if (id == R.id.Mapa) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("Sales", sales);
-            startActivity(intent);
-            return true;
-        }else if(id == R.id.Llista){
-            Intent intent = new Intent(this, LlistaClassesActivity.class);
-            intent.putExtra("Sales", sales);
-            startActivity(intent);
+        horizontalScrollView.addView(scrollView);
+        scrollView.addView(mapaPrincipal);
+        setContentView(horizontalScrollView);
+    }
 
-        }else {
-            progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage("Actualitzant...");
-            progressDialog.setCancelable(false);
-            progressDialog.setMax(100);
-            progressDialog.setProgress(0);
-            progressDialog.show();
+    private class ResponseReceiver extends BroadcastReceiver {
 
-            sales= new String[151];
-
-            for(int z = 0; z < 3; z++){
-                String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
-                new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
-                        "&sala2="+Sala2);
-            }
-
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    progressDialog.dismiss();
-                }
-            };
-
-            Timer timer = new Timer();
-            timer.schedule(timerTask,1500);
+        private ResponseReceiver() {
         }
-        return super.onOptionsItemSelected(item);
-    }*/
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sales = new String[152];
+            sales = intent.getExtras().getStringArray("Sales");
+            Log.d("ALEXPLANASOBANY", Arrays.toString(sales));
+            CrearMapa(sales);
+        }
+    }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override

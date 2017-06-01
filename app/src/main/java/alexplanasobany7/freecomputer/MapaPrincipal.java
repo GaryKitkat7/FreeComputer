@@ -63,8 +63,8 @@ public class MapaPrincipal extends View{
     public Map<RectF, String> rectangles = new HashMap<>();
     public Vector<Paint> ColorSala = new Vector<>();
     public List<RectF> rectangle = new ArrayList<>();
-    public String sala, Sala008, Sala010, Sala011, Sala012, SalaTemp;
-    public int S8,S10,S11,S12, STemp;
+    public String sala, Sala008, Sala010, Sala011, Sala012, Sala017, Sala018, SalaTemp;
+    public int S8,S10,S11,S12, S17, S18, STemp;
     Context context;
     public String[] OrdenadorsLLiures;
 
@@ -114,23 +114,14 @@ public class MapaPrincipal extends View{
     }
 
     public void init(){
+        Glide.with(getContext()).load(R.drawable.tr1tr2min).asBitmap().into(new SimpleTarget<Bitmap>(2800,2800) {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                Drawable drawable = new BitmapDrawable(resource);
+                setBackground(drawable);
+            }
+        });
 
-        Glide.with(getContext()).load(R.drawable.ptr1).asBitmap().into(new SimpleTarget<Bitmap>(2800,2800) {
-              @Override
-              public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                  Drawable drawable = new BitmapDrawable(resource);
-                  if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                      setBackground(drawable);
-                  }
-              }
-          });
-                //GuardaBitmaps.put("TR1", bitmap);
-
-
-
-        /*Resources resources = getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(resources,R.drawable.tr1min);
-        GuardaBitmaps.put("TR1",bitmap);*/
         // INICIALITZAR TOTS ELS PAINTS
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -163,20 +154,26 @@ public class MapaPrincipal extends View{
         paintLletres.setTextSize(50);
 
         //TODO: COMPLETAR LES SALES QUE FALTEN
-        sala008 = new RectF(243,2061,500,2440);
-        sala010 = new RectF(243,1166,507,1545);
-        sala011 = new RectF(243,768,508,1156);
-        sala012 = new RectF(243,455,512,755);
+        sala008 = new RectF(99,2157,321,2494);
+        sala010 = new RectF(99,1390,330,1716);
+        sala011 = new RectF(99,1037,330,1379);
+        sala012 = new RectF(99,765,333,1028);
+        sala017 = new RectF(547,81,771,324);
+        sala018 = new RectF(775,81,981,324);
 
         rectangle.add(sala008);
         rectangle.add(sala010);
         rectangle.add(sala011);
         rectangle.add(sala012);
+        rectangle.add(sala017);
+        rectangle.add(sala018);
 
         rectangles.put(sala008, "008");
         rectangles.put(sala010, "010");
         rectangles.put(sala011, "011");
         rectangles.put(sala012, "012");
+        rectangles.put(sala017, "017");
+        rectangles.put(sala018, "018");
 
     }
 
@@ -195,6 +192,14 @@ public class MapaPrincipal extends View{
         Sala012 = CalcularNumeroClasse(OrdenadorsLLiures,"012");
         S12 = Integer.valueOf(Sala012);
 
+        Sala017 = CalcularNumeroClasse(OrdenadorsLLiures,"017");
+        S17 = Integer.valueOf(Sala017);
+
+        Sala018 = CalcularNumeroClasse(OrdenadorsLLiures,"018");
+        S18 = Integer.valueOf(Sala018);
+
+
+
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.pc);
         float MAX_IMAGE_SIZE = 50;
         Bitmap scaledBitmap = scaleDown(bitmap, MAX_IMAGE_SIZE, true);
@@ -206,11 +211,11 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawRect(sala008,paintVermell);
         }
-        canvas.drawBitmap(scaledBitmap,440,2390,paint);
+        canvas.drawBitmap(scaledBitmap,270,2439,paint);
         if (S8 > 9){
-            canvas.drawText(Sala008,380,2433,paintLletres);
+            canvas.drawText(Sala008,211,2479,paintLletres);
         }else{
-            canvas.drawText(Sala008,400,2433,paintLletres);
+            canvas.drawText(Sala008,241,2479,paintLletres);
         }
 
 
@@ -222,11 +227,11 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawRect(sala010,paintVermell);
         }
-        canvas.drawBitmap(scaledBitmap,440,1490,paint);
+        canvas.drawBitmap(scaledBitmap,270,1656,paint);
         if (S10 > 9){
-            canvas.drawText(Sala010,380,1533,paintLletres);
+            canvas.drawText(Sala010,211,1696,paintLletres);
         }else{
-            canvas.drawText(Sala010,400,1533,paintLletres);
+            canvas.drawText(Sala010,241,1696,paintLletres);
         }
 
 
@@ -237,11 +242,11 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawRect(sala011,paintVermell);
         }
-        canvas.drawBitmap(scaledBitmap,440,1095,paint);
+        canvas.drawBitmap(scaledBitmap,270,1319,paint);
         if (S11 > 9){
-            canvas.drawText(Sala011,380,1138,paintLletres);
+            canvas.drawText(Sala011,211,1359,paintLletres);
         }else{
-            canvas.drawText(Sala011,400,1138,paintLletres);
+            canvas.drawText(Sala011,241,1359,paintLletres);
         }
 
 
@@ -252,11 +257,39 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawRect(sala012,paintVermell);
         }
-        canvas.drawBitmap(scaledBitmap,440,700,paint);
+        canvas.drawBitmap(scaledBitmap,280,975,paint);
         if (S12 > 9){
-            canvas.drawText(Sala012,380,743,paintLletres);
+            canvas.drawText(Sala012,220,1015,paintLletres);
         }else{
-            canvas.drawText(Sala012,400,743,paintLletres);
+            canvas.drawText(Sala012,250,1015,paintLletres);
+        }
+
+        if(S17 > 5){
+            canvas.drawRect(sala017,paintVerd);
+        }else if (S17 >= 1 && S17 <=5){
+            canvas.drawRect(sala017,paintAmbar);
+        }else{
+            canvas.drawRect(sala017,paintVermell);
+        }
+        canvas.drawBitmap(scaledBitmap,719,268,paint);
+        if (S17 > 9){
+            canvas.drawText(Sala017,659,308,paintLletres);
+        }else{
+            canvas.drawText(Sala017,689,308,paintLletres);
+        }
+
+        if(S18 > 5){
+            canvas.drawRect(sala018,paintVerd);
+        }else if (S18 >= 1 && S18 <=5){
+            canvas.drawRect(sala018,paintAmbar);
+        }else{
+            canvas.drawRect(sala018,paintVermell);
+        }
+        canvas.drawBitmap(scaledBitmap,927,268,paint);
+        if (S18 > 9){
+            canvas.drawText(Sala018,867,308,paintLletres);
+        }else{
+            canvas.drawText(Sala018,897,308,paintLletres);
         }
 
         //canvas.drawText(CalcularNumeroClasse(OrdenadorsLLiures,Sala012),350,100,paintLletres);
@@ -383,19 +416,23 @@ public class MapaPrincipal extends View{
             resfin = total - i;
             ResultatFinal = String.valueOf(resfin);
         }else if (sala.equals("017")){
+            total = 20;
             for(int j = 0; j < 20; j++){
                 if(vector[j+105].equals("1")){
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/20";
+            resfin = total - i;
+            ResultatFinal = String.valueOf(resfin);
         }else if (sala.equals("018")){
+            total = 20;
             for(int j = 0; j < 20; j++){
                 if(vector[j+125].equals("1")){
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/20";
+            resfin = total - i;
+            ResultatFinal = String.valueOf(resfin);
         }
         return ResultatFinal;
     }

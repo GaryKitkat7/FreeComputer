@@ -1,9 +1,13 @@
 package alexplanasobany7.freecomputer;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -62,6 +66,12 @@ public class LlistaClassesActivity extends AppCompatActivity{
         LlistaAULAPCs = (ListView) findViewById(R.id.Llista);
         arrayList = new ArrayList<>();
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServeiConsultaBBDDActivity.ACTION_RUN_ISERVICE);
+
+        ResponseReceiver receiver = new ResponseReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
+
         CargarLlista();
 
         LlistaAULAPCs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -105,49 +115,55 @@ public class LlistaClassesActivity extends AppCompatActivity{
 
     public String CalcularNumPCs(String[] vector, String sala) {
         String ResultatFinal = "";
-        int i = 0;
+        int i = 0, total;
         if (sala.equals("008")) {
+            total = 30;
             for (int j = 0; j < 30; j++) {
                 if (vector[j].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/30";
+            ResultatFinal = String.valueOf(total - i) + "/30";
         } else if (sala.equals("010")) {
+            total = 30;
             for (int j = 0; j < 30; j++) {
                 if (vector[j + 30].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/30";
+            ResultatFinal = String.valueOf(total-i) + "/30";
         } else if (sala.equals("011")) {
+            total = 25;
             for (int j = 0; j < 25; j++) {
                 if (vector[j + 60].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/25";
+            ResultatFinal = String.valueOf(total - i) + "/25";
         } else if (sala.equals("012")) {
+            total = 20;
             for (int j = 0; j < 20; j++) {
                 if (vector[j + 85].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/20";
+            ResultatFinal = String.valueOf(total-i) + "/20";
         } else if (sala.equals("017")) {
+            total = 20;
             for (int j = 0; j < 20; j++) {
                 if (vector[j + 105].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/20";
+            ResultatFinal = String.valueOf(total-i) + "/20";
         } else if (sala.equals("018")) {
+            total = 20;
             for (int j = 0; j < 20; j++) {
                 if (vector[j + 125].equals("1")) {
                     i++;
                 }
             }
-            ResultatFinal = String.valueOf(i) + "/20";
+            ResultatFinal = String.valueOf(total-i) + "/20";
         }
         return ResultatFinal;
     }
@@ -199,6 +215,20 @@ public class LlistaClassesActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(menuItem);
 
+    }
+
+    private class ResponseReceiver extends BroadcastReceiver {
+
+        private ResponseReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            OrdLLiures = new String[152];
+            OrdLLiures = intent.getExtras().getStringArray("Sales");
+            Log.d("ALEXPLANASOBANY", Arrays.toString(sales));
+            CargarLlista();
+        }
     }
 
     /*@Override
