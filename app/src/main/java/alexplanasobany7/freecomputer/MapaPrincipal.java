@@ -2,6 +2,7 @@ package alexplanasobany7.freecomputer;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,19 +22,27 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -43,9 +53,21 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,9 +86,14 @@ public class MapaPrincipal extends View{
     public Vector<Paint> ColorSala = new Vector<>();
     public List<RectF> rectangle = new ArrayList<>();
     public String sala, Sala008, Sala010, Sala011, Sala012, Sala017, Sala018, SalaTemp;
-    public int S8,S10,S11,S12, S17, S18, STemp;
+    public int S8,S10,S11,S12, S17, S18, STemp, opcio, ii = 0;
     Context context;
-    public String[] OrdenadorsLLiures;
+    public String[] OrdenadorsLLiures, Sales = PantallaEsperaPrincipalActivity.Sales;
+    long down, diff;
+    public ArrayList<ItemHoraris> itemHorarisArrayList , itemSala;
+    private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
+    private ListView llista;
+
 
 
     public MapaPrincipal(Context context,String[] strings){
@@ -76,14 +103,74 @@ public class MapaPrincipal extends View{
         init();
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d("Rectangles", String.valueOf(rectangles));
-        float touchX = event.getX();
-        float touchY = event.getY();
-        Log.d("PosicioX", String.valueOf(touchX));
-        Log.d("PosicioY", String.valueOf(touchY));
-        switch(event.getAction()){
+        final float touchX = event.getX();
+        final float touchY = event.getY();
+        final Handler handler = new Handler();
+        Runnable mLongPressed = new Runnable() {
+            public void run() {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Proxims Horaris");
+
+                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+sala+"&id_dia="+opcio);
+
+                //ListView modeList = new ListView(getContext());
+                //TODO : CANVIAR STRING
+                /*String[] stringArray = new String[] { "Programació Mobils Android", "Basses de Dades" };
+                ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, stringArray);
+                modeList.setAdapter(modeAdapter);*/
+                llista = new ListView(getContext());
+
+                adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(getContext(),itemHorarisArrayList);
+                llista.setAdapter(adaptadorLlistaHoraris);
+
+
+                builder.setView(llista);
+                final Dialog dialog = builder.create();
+
+                dialog.show();
+            }
+        };
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                down = System.currentTimeMillis();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                diff = System.currentTimeMillis() - down;
+                Log.d("Temps diferencia", String.valueOf(diff));
+                if(diff > 700){
+                    for(RectF rect : rectangle){
+                        if(rect.contains(touchX,touchY)){
+                            sala = rectangles.get(rect);
+                            handler.postDelayed(mLongPressed,0);
+                        }
+                    }
+                }else{
+                    for(RectF rect : rectangle) {
+                        if (rect.contains(touchX, touchY)) {
+                            sala = rectangles.get(rect);
+                            startActivity();
+
+                        }
+                    }
+                }
+                break;
+        }
+        /*else if(event.getAction() == MotionEvent.ACTION_UP){
+            for(RectF rect : rectangle) {
+                if (rect.contains(touchX, touchY)) {
+                    sala = rectangles.get(rect);
+                    startActivity();
+
+                }
+            }
+        }*/
+        /*switch(event.getAction()){
             case MotionEvent.ACTION_UP:
                 Log.d("AlexPlana", "Apretat");
                 for(RectF rect : rectangle){
@@ -98,10 +185,22 @@ public class MapaPrincipal extends View{
                 }
 
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_DOWN:
+                for(RectF rect : rectangle){
+                    Log.d("Alexxx", String.valueOf(rect));
+                    if(rect.contains(touchX,touchY)){
+                        Log.d("Plana", "Entrar a la Clase");
+                        sala = rectangles.get(rect);
+                        Log.d("La sala es:",sala);
+                        handler.postDelayed(mLongPressed,2000);
+
+                    }
+                }
+                break;
+            /*case MotionEvent.ACTION_MOVE:
                 Log.d("Alex", "Desplaçant la pantalla");
                 break;
-        }
+        }*/
         return true;
     }
 
@@ -121,6 +220,29 @@ public class MapaPrincipal extends View{
                 setBackground(drawable);
             }
         });
+
+        itemHorarisArrayList = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        Date d = new Date();
+        String dayOfTheWeek = sdf.format(d);
+
+        Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
+
+        if(dayOfTheWeek.equals("lunes")){
+            opcio = 1;
+        }else if(dayOfTheWeek.equals("martes")){
+            opcio = 2;
+        }else if(dayOfTheWeek.equals("miércoles")) {
+            opcio = 3;
+        }else if(dayOfTheWeek.equals("jueves")) {
+            opcio = 4;
+        }else if(dayOfTheWeek.equals("viernes")){
+            opcio = 5;
+        }else{
+            opcio = 1;
+        }
+        itemSala = new ArrayList<>();
 
         // INICIALITZAR TOTS ELS PAINTS
         paint = new Paint();
@@ -292,80 +414,6 @@ public class MapaPrincipal extends View{
             canvas.drawText(Sala018,897,308,paintLletres);
         }
 
-        //canvas.drawText(CalcularNumeroClasse(OrdenadorsLLiures,Sala012),350,100,paintLletres);
-        /*canvas.drawText(NumPCs,370,600,paintLletres);*/
-
-
-        //Crear les aules
-        //Primera aula -> del pixel 100 al 600 de llarg i ample +/-8 en les horitzontals per compensar l'ample de la linea
-        /*canvas.drawLine(92,100,408,100,paint);
-        canvas.drawLine(92,92,92,800,paint);
-        canvas.drawLine(408,92,408,800,paint);
-        canvas.drawLine(92,800,408,800,paint);
-        //012
-        canvas.drawText("012",200,965,paintLletres);
-        canvas.drawLine(92,800,92,1100,paint);
-        canvas.drawLine(408,800,408,1100,paint);
-        canvas.drawLine(92,1100,408,1100,paint);
-        //011
-        canvas.drawText("011",200,1325,paintLletres);
-        canvas.drawLine(92,1100,92,1500,paint);
-        canvas.drawLine(92,1500,408,1500,paint);
-        canvas.drawLine(408,1100,408,1500,paint);
-        //010
-        canvas.drawText("010",200,1725,paintLletres);
-        canvas.drawLine(92,1500,92,1900,paint);
-        canvas.drawLine(408,1500,408,1900,paint);
-        canvas.drawLine(92,1900,408,1900,paint);
-        //Sala Conferencies
-        canvas.drawText("S.C.",200,2125,paintLletres);
-        canvas.drawLine(92,1900,92,2308,paint);
-        canvas.drawLine(408,1900,408,2308,paint);
-        canvas.drawLine(92,2300,408,2300,paint);
-        //008
-        canvas.drawText("008",200,2565,paintLletres);
-        canvas.drawLine(92,2392,92,2708,paint);
-        canvas.drawLine(408,2392,408,2708,paint);
-        canvas.drawLine(92,2400,408,2400,paint);
-        canvas.drawLine(92,2700,408,2700,paint);
-
-        //Porta + WC
-        canvas.drawLine(400,100,900,100,paint);
-        canvas.drawLine(400,400,900,400,paint);
-        canvas.drawLine(900,100,900,408,paint);
-        //017
-        canvas.drawText("017",1100,275,paintLletres);
-        canvas.drawLine(900,100,1400,100,paint);
-        canvas.drawLine(908,400,1400,400,paint);
-        canvas.drawLine(1400,100,1400,408,paint);
-        //018
-        canvas.drawText("018",1600,275,paintLletres);
-        canvas.drawLine(1400,100,1908,100,paint);
-        canvas.drawLine(1400,400,1908,400,paint);
-        canvas.drawLine(1908,92,1908,408,paint);
-
-        //PATI COTXES
-        canvas.drawLine(500,492,500,800,paint);
-        canvas.drawLine(492,500,2000,500,paint);
-        canvas.drawLine(492,800,2000,800, paint);
-
-        //015
-        canvas.drawLine(500,800,500,1100,paint);
-        canvas.drawLine(500,800,1300,800,paint);
-        canvas.drawLine(492,1100,1300,1100,paint);
-        canvas.drawLine(1300,792,1300,1108,paint);
-        //Antiga Copisteria
-        canvas.drawText("015",850,965,paintLletres);
-        canvas.drawLine(1300,1100,2008,1100,paint);
-        canvas.drawLine(2000,792,2000,1108,paint);
-
-        //Pati + Menjador
-        canvas.drawLine(500,1200,2000,1200,paint);
-        canvas.drawLine(500,2300,2000,2300,paint);
-        canvas.drawLine(500,1192,500,2308,paint);
-        canvas.drawLine(2000,1192,2000,2308,paint);
-        canvas.drawRect(menjador,areaRestringida);*/
-
         //TODO: COM SÉ QUINA CLASSE ESTÀ OBERTA. CONSULTAR BBDD??
     }
 
@@ -450,20 +498,78 @@ public class MapaPrincipal extends View{
         return newBitmap;
     }
 
-    /*public Paint ColorSales(String salaTemporal){
-        SalaTemp = CalcularNumeroClasse(OrdenadorsLLiures,rectangles.get(salaTemporal));
-        STemp = Integer.parseInt(SalaTemp);
-
-        if(STemp < 5){
-            return paintVerd;
-        }else if (STemp >= 1 && STemp <=5){
-            return paintAmbar;
-        }else{
-            return paintVermell;
+    private class ConsultarDadesHorari extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "URL incorrecta";
+            }
         }
 
+        protected void onPostExecute(String result) {
+            JSONArray ja;
+            try {
+                ja = new JSONArray(result);
+                itemHorarisArrayList.clear();
+                ii = 0;
+                for(int j = 0; j < ja.length(); j++){
+                    String consulta = ja.getString(j).substring(2);
+                    int coma = consulta.indexOf(",");
+                    String assig = consulta.substring(0,coma-1);
+                    consulta = consulta.substring(coma+2);
+                    coma = consulta.indexOf(",");
+                    String hi = consulta.substring(0,coma-1);
+                    consulta = consulta.substring(coma+2);
+                    coma = consulta.indexOf(",");
+                    String hf = consulta.substring(0,coma-1);
+                    itemHorarisArrayList.add(ii,new ItemHoraris(assig,hi,hf));
+                    ii++;
+                }
 
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("reposta", "No ENtRAAA");
+            }
+        }
+    }
 
-        return ColorSala;
-    }*/
+    private String downloadUrl(String myurl) throws IOException {
+        myurl = myurl.replace(" ", "%20");
+        InputStream stream = null;
+        int len = 500;
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(3000);
+            connection.setConnectTimeout(3000);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            // Open communications link (network traffic occurs here).
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            Log.d("reposta", "La resposta es: " + responseCode);
+            // Retrieve the response body as an InputStream.
+            stream = connection.getInputStream();
+
+            //Convertir el InputString a String
+            String ContentAsString = readIt(stream, len);
+            return ContentAsString;
+
+        } finally {
+            // Close Stream and disconnect HTTPS connection.
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
+    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
+    }
 }

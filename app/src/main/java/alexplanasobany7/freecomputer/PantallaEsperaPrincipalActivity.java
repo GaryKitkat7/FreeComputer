@@ -36,19 +36,24 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
     private static final long TEMPS_ESPERAR = 1000;
-    public int i = 0;
+    public int i = 0, ii = 0;
     public int tipusPantalla;
     public boolean notis;
     public String NOTIS;
-//    public int KEY;
     public String[] sales;
+    public static String[] DiesSetmana = {"Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres"};
     public static String[] Sales = {"008","010","011","012","017","018"};
     private int fila5 = 5, columna6 = 6, columna5 = 5, fila4 = 4;
     private String Sala008 = "008", Sala010 = "010", Sala011 = "011", Sala012 = "012";
@@ -70,9 +75,7 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         progressBar.getIndeterminateDrawable()
                 .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
-
         sales= new String[152];
-        //new ConsultarDades().execute("http://95.85.16.142/ConsultarTot.php");
 
         for(int z = 0; z < 3; z++){
             String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];

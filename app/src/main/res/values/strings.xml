@@ -33,4 +33,8 @@
     <string name="Configuracio">Configuració</string>
     <string name="TitolNotificacions">Activar les notificacions</string>
     <string name="SummaryNotis">Activar/Desactivar notificacions</string>
+    <string name="EstatTelefon">Estat del telèfon</string>
+    <string name="TipusNotis">Tipus de Notificacions</string>
+    <string name="SummaryEstatTelefon">Elegeix la notificació que vulguis</string>
+    <string name="SummaryNotificacions">Quan vols ser avisat pel telèfon?</string>
 </resources>

@@ -1,5 +1,6 @@
 package alexplanasobany7.freecomputer;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -35,8 +37,10 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,16 +49,17 @@ import static java.security.AccessController.getContext;
 
 public class LlistaClassesActivity extends AppCompatActivity{
 
-    private ListView LlistaAULAPCs;
+    private ListView LlistaAULAPCs, llista;
     public String[] sales;
-    public int i = 0;
+    public int i = 0, ii,  opcio;
     ProgressDialog progressDialog;
     public String[] Sales = PantallaEsperaPrincipalActivity.Sales;
     private ArrayList<ItemLlistaClases> arrayList;
+    private ArrayList<ItemHoraris> itemHorarisArrayList;
     private AdaptadorDeLaLlistaPCs adaptadorDeLaLlistaPCs;
+    private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
     public String[] OrdLLiures;
     private String Sala;
-    public int KEY_LLISTA = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +67,30 @@ public class LlistaClassesActivity extends AppCompatActivity{
         setContentView(R.layout.activity_llista_classes);
         OrdLLiures = getIntent().getExtras().getStringArray("Sales");
         Log.d("Ordinadors Lliures", Arrays.toString(OrdLLiures));
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        Date d = new Date();
+        String dayOfTheWeek = sdf.format(d);
+
+        Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
+
+        if(dayOfTheWeek.equals("lunes")){
+            opcio = 1;
+        }else if(dayOfTheWeek.equals("martes")){
+            opcio = 2;
+        }else if(dayOfTheWeek.equals("miércoles")) {
+            opcio = 3;
+        }else if(dayOfTheWeek.equals("jueves")) {
+            opcio = 4;
+        }else if(dayOfTheWeek.equals("viernes")){
+            opcio = 5;
+        }else{
+            opcio = 1;
+        }
 
         LlistaAULAPCs = (ListView) findViewById(R.id.Llista);
         arrayList = new ArrayList<>();
+        itemHorarisArrayList = new ArrayList<>();
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ServeiConsultaBBDDActivity.ACTION_RUN_ISERVICE);
@@ -96,6 +122,49 @@ public class LlistaClassesActivity extends AppCompatActivity{
                 intent.putExtra("Sales", OrdLLiures);
                 intent.putExtra("sala", Sala);
                 getApplicationContext().startActivity(intent);
+            }
+        });
+
+        LlistaAULAPCs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0){
+                    Sala = "008";
+                }else if(position == 1){
+                    Sala = "010";
+                }else if(position == 2){
+                    Sala = "011";
+                }else if(position==3){
+                    Sala = "012";
+                }else if(position == 4){
+                    Sala = "017";
+                }else{
+                    Sala = "018";
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(LlistaClassesActivity.this);
+                builder.setTitle("Proxims Horaris");
+
+                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+Sala+"&id_dia="+opcio);
+
+                //ListView modeList = new ListView(getContext());
+                //TODO : CANVIAR STRING
+                /*String[] stringArray = new String[] { "Programació Mobils Android", "Basses de Dades" };
+                ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, stringArray);
+                modeList.setAdapter(modeAdapter);*/
+                llista = new ListView(LlistaClassesActivity.this);
+
+                adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(LlistaClassesActivity.this,itemHorarisArrayList);
+                llista.setAdapter(adaptadorLlistaHoraris);
+
+
+                builder.setView(llista);
+                final Dialog dialog = builder.create();
+
+                dialog.show();
+
+                return true;
             }
         });
 
@@ -231,53 +300,6 @@ public class LlistaClassesActivity extends AppCompatActivity{
         }
     }
 
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.Mapa) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("Sales", OrdLLiures);
-            startActivity(intent);
-            return true;
-        } else if(id == R.id.Llista){
-            Intent intent = new Intent(this, LlistaClassesActivity.class);
-            intent.putExtra("Sales", OrdLLiures);
-            startActivity(intent);
-        }else{
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage("Actualitzant...");
-            progressDialog.setCancelable(false);
-            progressDialog.setMax(100);
-            progressDialog.setProgress(0);
-            progressDialog.show();
-
-            sales= new String[151];
-
-            for(int z = 0; z < 3; z++){
-                String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
-                new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
-                        "&sala2="+Sala2);
-            }
-
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    progressDialog.dismiss();
-                    Intent intent = new Intent(getApplicationContext(), LlistaClassesActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("Sales", sales);
-                    startActivity(intent);
-                }
-            };
-
-            Timer timer = new Timer();
-            timer.schedule(timerTask,3000);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {
         @Override
@@ -302,6 +324,44 @@ public class LlistaClassesActivity extends AppCompatActivity{
                 }
 
                 Log.d("ALEXPLANA1", Arrays.toString(sales));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("reposta", "No ENtRAAA");
+            }
+        }
+    }
+
+    private class ConsultarDadesHorari extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "URL incorrecta";
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            JSONArray ja;
+            try {
+                ja = new JSONArray(result);
+                itemHorarisArrayList.clear();
+                ii = 0;
+                for(int j = 0; j < ja.length(); j++){
+                    String consulta = ja.getString(j).substring(2);
+                    int coma = consulta.indexOf(",");
+                    String assig = consulta.substring(0,coma-1);
+                    consulta = consulta.substring(coma+2);
+                    coma = consulta.indexOf(",");
+                    String hi = consulta.substring(0,coma-1);
+                    consulta = consulta.substring(coma+2);
+                    coma = consulta.indexOf(",");
+                    String hf = consulta.substring(0,coma-1);
+                    itemHorarisArrayList.add(ii,new ItemHoraris(assig,hi,hf));
+                    ii++;
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
