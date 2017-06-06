@@ -80,15 +80,16 @@ import java.util.concurrent.ExecutionException;
 
 public class MapaPrincipal extends View{
 
-    private Paint paint, paintLletres, paintVerd, paintAmbar, paintVermell;
+    private Paint paint, paintLletres, paintVerd, paintAmbar, paintVermell, paintAulaTancada;
     private RectF menjador, sala008, sala010, sala011, sala012, sala017,sala018;
     public Map<RectF, String> rectangles = new HashMap<>();
     public Vector<Paint> ColorSala = new Vector<>();
     public List<RectF> rectangle = new ArrayList<>();
     public String sala, Sala008, Sala010, Sala011, Sala012, Sala017, Sala018, SalaTemp;
-    public int S8,S10,S11,S12, S17, S18, STemp, opcio, ii = 0;
+    public int S8,S10,S11,S12, S17, S18, STemp, dia, ii = 0;
     Context context;
-    public String[] OrdenadorsLLiures, Sales = PantallaEsperaPrincipalActivity.Sales;
+    public List<String> aulesOcup;
+    public String[] OrdenadorsLLiures, Sales = PantallaEsperaPrincipalActivity.Sales, aulesOcupades;
     long down, diff;
     public ArrayList<ItemHoraris> itemHorarisArrayList , itemSala;
     private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
@@ -96,10 +97,12 @@ public class MapaPrincipal extends View{
 
 
 
-    public MapaPrincipal(Context context,String[] strings){
+    public MapaPrincipal(Context context,String[] strings, int dia, String[] AulesOc){
         super(context);
         this.context = context;
+        this.dia = dia;
         this.OrdenadorsLLiures = strings;
+        this.aulesOcupades = AulesOc;
         init();
     }
 
@@ -115,14 +118,8 @@ public class MapaPrincipal extends View{
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Proxims Horaris");
 
-                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+sala+"&id_dia="+opcio);
+                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+sala+"&id_dia="+dia);
 
-                //ListView modeList = new ListView(getContext());
-                //TODO : CANVIAR STRING
-                /*String[] stringArray = new String[] { "Programació Mobils Android", "Basses de Dades" };
-                ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, stringArray);
-                modeList.setAdapter(modeAdapter);*/
                 llista = new ListView(getContext());
 
                 adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(getContext(),itemHorarisArrayList);
@@ -161,46 +158,6 @@ public class MapaPrincipal extends View{
                 }
                 break;
         }
-        /*else if(event.getAction() == MotionEvent.ACTION_UP){
-            for(RectF rect : rectangle) {
-                if (rect.contains(touchX, touchY)) {
-                    sala = rectangles.get(rect);
-                    startActivity();
-
-                }
-            }
-        }*/
-        /*switch(event.getAction()){
-            case MotionEvent.ACTION_UP:
-                Log.d("AlexPlana", "Apretat");
-                for(RectF rect : rectangle){
-                    Log.d("Alexxx", String.valueOf(rect));
-                    if(rect.contains(touchX,touchY)){
-                        Log.d("Plana", "Entrar a la Clase");
-                        sala = rectangles.get(rect);
-                        Log.d("La sala es:",sala);
-                        startActivity();
-
-                    }
-                }
-
-                break;
-            case MotionEvent.ACTION_DOWN:
-                for(RectF rect : rectangle){
-                    Log.d("Alexxx", String.valueOf(rect));
-                    if(rect.contains(touchX,touchY)){
-                        Log.d("Plana", "Entrar a la Clase");
-                        sala = rectangles.get(rect);
-                        Log.d("La sala es:",sala);
-                        handler.postDelayed(mLongPressed,2000);
-
-                    }
-                }
-                break;
-            /*case MotionEvent.ACTION_MOVE:
-                Log.d("Alex", "Desplaçant la pantalla");
-                break;
-        }*/
         return true;
     }
 
@@ -223,25 +180,6 @@ public class MapaPrincipal extends View{
 
         itemHorarisArrayList = new ArrayList<>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-        Date d = new Date();
-        String dayOfTheWeek = sdf.format(d);
-
-        Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
-
-        if(dayOfTheWeek.equals("lunes")){
-            opcio = 1;
-        }else if(dayOfTheWeek.equals("martes")){
-            opcio = 2;
-        }else if(dayOfTheWeek.equals("miércoles")) {
-            opcio = 3;
-        }else if(dayOfTheWeek.equals("jueves")) {
-            opcio = 4;
-        }else if(dayOfTheWeek.equals("viernes")){
-            opcio = 5;
-        }else{
-            opcio = 1;
-        }
         itemSala = new ArrayList<>();
 
         // INICIALITZAR TOTS ELS PAINTS
@@ -269,13 +207,18 @@ public class MapaPrincipal extends View{
         paintVermell.setStrokeWidth(16.0f);
         paintVermell.setStyle(Paint.Style.FILL);
 
+        paintAulaTancada = new Paint();
+        paintAulaTancada.setAntiAlias(true);
+        paintAulaTancada.setColor(Color.GRAY);
+        paintAulaTancada.setStrokeWidth(16.0f);
+        paintAulaTancada.setStyle(Paint.Style.FILL);
+
         paintLletres = new Paint();
         paintLletres.setAntiAlias(true);
         paintLletres.setColor(Color.BLACK);
         paintLletres.setStyle(Paint.Style.FILL);
         paintLletres.setTextSize(50);
 
-        //TODO: COMPLETAR LES SALES QUE FALTEN
         sala008 = new RectF(99,2157,321,2494);
         sala010 = new RectF(99,1390,330,1716);
         sala011 = new RectF(99,1037,330,1379);
@@ -326,6 +269,7 @@ public class MapaPrincipal extends View{
         float MAX_IMAGE_SIZE = 50;
         Bitmap scaledBitmap = scaleDown(bitmap, MAX_IMAGE_SIZE, true);
 
+
         if(S8 > 5){
             canvas.drawRect(sala008,paintVerd);
         }else if (S8 >= 1 && S8 <=5){
@@ -339,8 +283,6 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawText(Sala008,241,2479,paintLletres);
         }
-
-
 
         if(S10 > 5){
             canvas.drawRect(sala010,paintVerd);
@@ -356,7 +298,6 @@ public class MapaPrincipal extends View{
             canvas.drawText(Sala010,241,1696,paintLletres);
         }
 
-
         if(S11 > 5){
             canvas.drawRect(sala011,paintVerd);
         }else if (S11 >= 1 && S11 <=5){
@@ -370,7 +311,6 @@ public class MapaPrincipal extends View{
         }else{
             canvas.drawText(Sala011,241,1359,paintLletres);
         }
-
 
         if(S12 > 5){
             canvas.drawRect(sala012,paintVerd);
@@ -414,7 +354,27 @@ public class MapaPrincipal extends View{
             canvas.drawText(Sala018,897,308,paintLletres);
         }
 
-        //TODO: COM SÉ QUINA CLASSE ESTÀ OBERTA. CONSULTAR BBDD??
+        for(int i = 0; aulesOcupades[i] != null; i++){
+            if (aulesOcupades[i].equals("008")){
+                canvas.drawRect(sala008,paintAulaTancada);
+                rectangle.remove(sala008);
+            }else if(aulesOcupades[i].equals("010")){
+                canvas.drawRect(sala010,paintAulaTancada);
+                rectangle.remove(sala010);
+            }else if(aulesOcupades[i].equals("011")){
+                canvas.drawRect(sala011,paintAulaTancada);
+                rectangle.remove(sala011);
+            }else if(aulesOcupades[i].equals("012")){
+                canvas.drawRect(sala012,paintAulaTancada);
+                rectangle.remove(sala012);
+            }else if(aulesOcupades[i].equals("017")){
+                canvas.drawRect(sala017,paintAulaTancada);
+                rectangle.remove(sala017);
+            }else if(aulesOcupades[i].equals("018")){
+                canvas.drawRect(sala018,paintAulaTancada);
+                rectangle.remove(sala018);
+            }
+        }
     }
 
 

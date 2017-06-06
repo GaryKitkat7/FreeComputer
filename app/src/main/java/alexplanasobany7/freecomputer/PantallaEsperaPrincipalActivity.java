@@ -48,11 +48,12 @@ import java.util.TimerTask;
 public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
     private static final long TEMPS_ESPERAR = 1000;
-    public int i = 0, ii = 0;
+    public int i = 0, iii = 0, opcio;
+    public static int dia;
     public int tipusPantalla;
     public boolean notis;
-    public String NOTIS;
-    public String[] sales;
+    public String NOTIS, HoraActual;
+    public String[] sales, aulesOcupades;
     public static String[] DiesSetmana = {"Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres"};
     public static String[] Sales = {"008","010","011","012","017","018"};
     private int fila5 = 5, columna6 = 6, columna5 = 5, fila4 = 4;
@@ -67,7 +68,7 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_pantalla_espera_principal);
-//        KEY = getIntent().getExtras().getInt("KEY");
+//      KEY = getIntent().getExtras().getInt("KEY");
 
         imageView = (ImageView)findViewById(R.id.imatge_espera);
         Glide.with(this).load(R.drawable.pantprincipal).asBitmap().into(imageView);
@@ -75,13 +76,62 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         progressBar.getIndeterminateDrawable()
                 .setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
+        Date date = new Date();
+        int hora = date.getHours();
+        if (hora < 10){
+            HoraActual = "0"+String.valueOf(hora);
+        }else{
+            HoraActual = String.valueOf(hora);
+        }
+        int minuts = date.getMinutes();
+        if(minuts < 10){
+            HoraActual = HoraActual + ":0"+String.valueOf(minuts);
+        }else {
+            HoraActual = HoraActual + ":" +String.valueOf(minuts);
+        }
+        int segons = date.getSeconds();
+        if(segons < 10){
+            HoraActual = HoraActual + ":0"+String.valueOf(segons);
+        }else{
+            HoraActual = HoraActual + ":" +String.valueOf(segons);
+        }
+        Log.d("HORA ACTUAL", HoraActual);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        String dayOfTheWeek = sdf.format(date);
+
+        Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
+
+        if(dayOfTheWeek.equals("lunes")){
+            opcio = 1;
+            dia = 1;
+        }else if(dayOfTheWeek.equals("martes")){
+            opcio = 2;
+            dia = 2;
+        }else if(dayOfTheWeek.equals("miércoles")) {
+            opcio = 3;
+            dia = 3;
+        }else if(dayOfTheWeek.equals("jueves")) {
+            opcio = 4;
+            dia = 4;
+        }else if(dayOfTheWeek.equals("viernes")){
+            opcio = 5;
+            dia = 5;
+        }else{
+            opcio = 1;
+        }
+
         sales= new String[152];
+        aulesOcupades = new String[7];
 
         for(int z = 0; z < 3; z++){
             String Sala1=Sales[z*2], Sala2 = Sales[(z*2)+1];
             new ConsultarDades().execute("http://95.85.16.142/Consultar2Sales.php?sala1="+Sala1+
                     "&sala2="+Sala2);
         }
+
+        new ConsultarDadesHorariAula().execute("http://95.85.16.142/ConsultarEstatAula.php?hora="
+                +HoraActual+"&dia="+opcio);
 
 
         final TimerTask timerTask = new TimerTask() {
@@ -105,22 +155,30 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,MainActivity.class);
                     intent.putExtra("Sales",sales);
+                    intent.putExtra("Dia", opcio);
+                    intent.putExtra("AulesOcupades", aulesOcupades);
                     startActivity(intent);
                 }else if(tipusPantalla == 2 && notis){
                     IniciaServei();
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,LlistaClassesActivity.class);
                     intent.putExtra("Sales",sales);
+                    intent.putExtra("Dia", opcio);
+                    intent.putExtra("AulesOcupades", aulesOcupades);
                     startActivity(intent);
                 }else if(tipusPantalla == 1 && !notis){
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,MainActivity.class);
                     intent.putExtra("Sales",sales);
+                    intent.putExtra("Dia", opcio);
+                    intent.putExtra("AulesOcupades", aulesOcupades);
                     startActivity(intent);
                 }else if (tipusPantalla == 2 && !notis){
                     Intent intent = new Intent().setClass(
                             PantallaEsperaPrincipalActivity.this,LlistaClassesActivity.class);
                     intent.putExtra("Sales", sales);
+                    intent.putExtra("Dia", opcio);
+                    intent.putExtra("AulesOcupades", aulesOcupades);
                     startActivity(intent);
                 }
                 finish();
@@ -135,7 +193,38 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ServeiConsultaBBDDActivity.class);
         intent.setAction("alexplanasobany7.freecomputer.action.RUN_INTENT_SERVICE");
         intent.putExtra("Sales",sales);
+        intent.putExtra("Hora", HoraActual);
+        intent.putExtra("Dia", opcio);
         startService(intent);
+    }
+
+    private class ConsultarDadesHorariAula extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "URL incorrecta";
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            JSONArray ja;
+            try {
+                ja = new JSONArray(result);
+                for(int j = 0; j < ja.length(); j++){
+                    String substring = ja.getString(j);
+                    aulesOcupades[iii] = substring.substring(2,5);
+                    iii++;
+                }
+                Log.d("AulesOcupadesAra", Arrays.toString(aulesOcupades));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("reposta", "No ENtRAAA");
+            }
+        }
     }
 
     private class ConsultarDades extends AsyncTask<String, Void, String> {

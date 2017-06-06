@@ -24,17 +24,14 @@
         completions."
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!-- Strings Preferences -->
     <string name="SummaryLlista">Elegeix la vista que vulguis</string>
     <string name="TipusVista">Vista</string>
     <string name="Configuracio">Configuració</string>
     <string name="TitolNotificacions">Activar les notificacions</string>
     <string name="SummaryNotis">Activar/Desactivar notificacions</string>
-    <string name="EstatTelefon">Estat del telèfon</string>
+    <string name="EstatTelefon">Vibració</string>
     <string name="TipusNotis">Tipus de Notificacions</string>
-    <string name="SummaryEstatTelefon">Elegeix la notificació que vulguis</string>
+    <string name="SummaryEstatTelefon">Activar/Desactivar la vibració de les notificacions</string>
     <string name="SummaryNotificacions">Quan vols ser avisat pel telèfon?</string>
 </resources>

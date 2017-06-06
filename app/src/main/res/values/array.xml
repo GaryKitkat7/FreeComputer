@@ -10,18 +10,6 @@
         <item name="1">1</item>
         <item name="2">2</item>
     </string-array>
-    <string-array name="TipusNoti">
-        <item name="0">Silenci</item>
-        <item name="1">Vibració</item>
-        <item name="2">So</item>
-        <item name="3">Igual que el telèfon</item>
-    </string-array>
-    <string-array name="ValorsTipusNoti">
-        <item name="0">0</item>
-        <item name="1">1</item>
-        <item name="2">2</item>
-        <item name="3">3</item>
-    </string-array>
     <string-array name="ModificacionNoti">
         <item name="0">Sempre</item>
         <item name="1">Quan hi hagi una aula nova disponible</item>

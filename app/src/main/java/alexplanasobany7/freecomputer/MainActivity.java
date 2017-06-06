@@ -43,18 +43,20 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    public String[] sales;
+    public String[] sales, aulesOcupades;
     ProgressDialog progressDialog;
     public String[] Sales = PantallaEsperaPrincipalActivity.Sales;
-    public int i = 0;
+    public int i = 0, dia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sales = getIntent().getExtras().getStringArray("Sales");
+        dia = getIntent().getExtras().getInt("Dia");
+        aulesOcupades = getIntent().getExtras().getStringArray("AulesOcupades");
 
-        CrearMapa(sales);
+        CrearMapa(sales,aulesOcupades);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ServeiConsultaBBDDActivity.ACTION_RUN_ISERVICE);
@@ -106,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Intent intent = new Intent(this, LlistaClassesActivity.class);
             intent.putExtra("Sales", sales);
+            intent.putExtra("Dia", dia);
+            intent.putExtra("AulesOcupades", aulesOcupades);
             startActivity(intent);
         }
 
@@ -113,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void CrearMapa(String[] sales){
-        final MapaPrincipal mapaPrincipal = new MapaPrincipal(this,sales);
+    private void CrearMapa(String[] sales, String[] Aules){
+        final MapaPrincipal mapaPrincipal = new MapaPrincipal(this,sales,dia,Aules);
         ScrollView scrollView = new ScrollView(this);
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
 
@@ -132,8 +136,9 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             sales = new String[152];
             sales = intent.getExtras().getStringArray("Sales");
+            aulesOcupades = intent.getExtras().getStringArray("AulesOcupades");
             Log.d("ALEXPLANASOBANY", Arrays.toString(sales));
-            CrearMapa(sales);
+            CrearMapa(sales,aulesOcupades);
         }
     }
 

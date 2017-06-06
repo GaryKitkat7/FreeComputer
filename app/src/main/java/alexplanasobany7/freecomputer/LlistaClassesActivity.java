@@ -51,45 +51,30 @@ public class LlistaClassesActivity extends AppCompatActivity{
 
     private ListView LlistaAULAPCs, llista;
     public String[] sales;
-    public int i = 0, ii,  opcio;
+    public int i = 0, ii,  dia;
     ProgressDialog progressDialog;
     public String[] Sales = PantallaEsperaPrincipalActivity.Sales;
     private ArrayList<ItemLlistaClases> arrayList;
     private ArrayList<ItemHoraris> itemHorarisArrayList;
     private AdaptadorDeLaLlistaPCs adaptadorDeLaLlistaPCs;
     private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
-    public String[] OrdLLiures;
-    private String Sala;
+    public String[] OrdLLiures, AulesOcupades;
+    public List<String> AulesLliures;
+    private String Sala, sala;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_llista_classes);
         OrdLLiures = getIntent().getExtras().getStringArray("Sales");
+        AulesOcupades = getIntent().getExtras().getStringArray("AulesOcupades");
+        dia = getIntent().getExtras().getInt("Dia");
         Log.d("Ordinadors Lliures", Arrays.toString(OrdLLiures));
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-        Date d = new Date();
-        String dayOfTheWeek = sdf.format(d);
-
-        Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
-
-        if(dayOfTheWeek.equals("lunes")){
-            opcio = 1;
-        }else if(dayOfTheWeek.equals("martes")){
-            opcio = 2;
-        }else if(dayOfTheWeek.equals("miércoles")) {
-            opcio = 3;
-        }else if(dayOfTheWeek.equals("jueves")) {
-            opcio = 4;
-        }else if(dayOfTheWeek.equals("viernes")){
-            opcio = 5;
-        }else{
-            opcio = 1;
-        }
 
         LlistaAULAPCs = (ListView) findViewById(R.id.Llista);
         arrayList = new ArrayList<>();
         itemHorarisArrayList = new ArrayList<>();
+        AulesLliures = new ArrayList<>();
 
 
         IntentFilter filter = new IntentFilter();
@@ -98,23 +83,23 @@ public class LlistaClassesActivity extends AppCompatActivity{
         ResponseReceiver receiver = new ResponseReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
 
-        CargarLlista();
+        CargarLlista(OrdLLiures, AulesOcupades);
 
         LlistaAULAPCs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0){
-                    Sala = "008";
+                    Sala = AulesLliures.get(0);
                 }else if(position == 1){
-                    Sala = "010";
+                    Sala = AulesLliures.get(1);
                 }else if(position == 2){
-                    Sala = "011";
+                    Sala = AulesLliures.get(2);
                 }else if(position==3){
-                    Sala = "012";
+                    Sala = AulesLliures.get(3);
                 }else if(position == 4){
-                    Sala = "017";
+                    Sala = AulesLliures.get(4);
                 }else{
-                    Sala = "018";
+                    Sala = AulesLliures.get(5);
                 }
 
                 Intent intent = new Intent(getApplicationContext(), InteriorClassesActivity.class);
@@ -145,14 +130,8 @@ public class LlistaClassesActivity extends AppCompatActivity{
                 AlertDialog.Builder builder = new AlertDialog.Builder(LlistaClassesActivity.this);
                 builder.setTitle("Proxims Horaris");
 
-                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+Sala+"&id_dia="+opcio);
+                new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+Sala+"&id_dia="+dia);
 
-                //ListView modeList = new ListView(getContext());
-                //TODO : CANVIAR STRING
-                /*String[] stringArray = new String[] { "Programació Mobils Android", "Basses de Dades" };
-                ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, stringArray);
-                modeList.setAdapter(modeAdapter);*/
                 llista = new ListView(LlistaClassesActivity.this);
 
                 adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(LlistaClassesActivity.this,itemHorarisArrayList);
@@ -170,16 +149,26 @@ public class LlistaClassesActivity extends AppCompatActivity{
 
     }
 
-    private void CargarLlista() {
-        arrayList.add(new ItemLlistaClases("Aula 008", CalcularNumPCs(OrdLLiures, "008")));
-        arrayList.add(new ItemLlistaClases("Aula 010", CalcularNumPCs(OrdLLiures, "010")));
-        arrayList.add(new ItemLlistaClases("Aula 011", CalcularNumPCs(OrdLLiures, "011")));
-        arrayList.add(new ItemLlistaClases("Aula 012", CalcularNumPCs(OrdLLiures, "012")));
-        arrayList.add(new ItemLlistaClases("Aula 017", CalcularNumPCs(OrdLLiures, "017")));
-        arrayList.add(new ItemLlistaClases("Aula 018", CalcularNumPCs(OrdLLiures, "018")));
+    private void CargarLlista(String[] OrdLLiures, String[] AulesOcupades) {
+        for(int i = 0; i < Sales.length; i++){
+            Log.d("Sales", Arrays.toString(Sales));
+            AulesLliures.add(Sales[i]);
+        }
+
+        for (int i = 0; i < AulesLliures.size(); i++){
+            if(AulesLliures.contains(AulesOcupades[i])){
+                AulesLliures.remove(AulesOcupades[i]);
+            }
+        }
+
+        for (int i = 0; i < AulesLliures.size(); i++){
+            arrayList.add(new ItemLlistaClases("Aula"+AulesLliures.get(i),
+                    CalcularNumPCs(OrdLLiures,AulesLliures.get(i))));
+        }
 
         adaptadorDeLaLlistaPCs = new AdaptadorDeLaLlistaPCs(this, arrayList);
         LlistaAULAPCs.setAdapter(adaptadorDeLaLlistaPCs);
+
     }
 
     public String CalcularNumPCs(String[] vector, String sala) {
@@ -280,6 +269,8 @@ public class LlistaClassesActivity extends AppCompatActivity{
         }else if(id == R.id.Mapa){
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("Sales", OrdLLiures);
+            intent.putExtra("Dia",dia);
+            intent.putExtra("AulesOcupades", AulesOcupades);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(menuItem);
@@ -295,8 +286,9 @@ public class LlistaClassesActivity extends AppCompatActivity{
         public void onReceive(Context context, Intent intent) {
             OrdLLiures = new String[152];
             OrdLLiures = intent.getExtras().getStringArray("Sales");
+            AulesOcupades = intent.getExtras().getStringArray("AulesOcupades");
             Log.d("ALEXPLANASOBANY", Arrays.toString(sales));
-            CargarLlista();
+            CargarLlista(OrdLLiures, AulesOcupades);
         }
     }
 

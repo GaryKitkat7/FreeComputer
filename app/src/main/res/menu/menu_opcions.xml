@@ -3,17 +3,14 @@
 
     <item android:id="@+id/Mapa"
         android:title="@string/Mapa"
-        android:icon="@android:drawable/stat_notify_more"
-        android:showAsAction="always" />
+        android:showAsAction="never" />
 
     <item android:id="@+id/Configuracio"
         android:title="@string/Configuracio"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction="always" />
+        android:showAsAction="never" />
 
     <item android:id="@+id/Refresca"
         android:title="@string/Refrescar"
-        android:showAsAction="always"
-        android:icon="@android:drawable/ic_popup_sync" />
+        android:showAsAction="never" />
 
 </menu>
