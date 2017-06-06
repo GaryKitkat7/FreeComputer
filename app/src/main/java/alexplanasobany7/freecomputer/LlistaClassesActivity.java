@@ -150,6 +150,7 @@ public class LlistaClassesActivity extends AppCompatActivity{
     }
 
     private void CargarLlista(String[] OrdLLiures, String[] AulesOcupades) {
+        AulesLliures = new ArrayList<>();
         for(int i = 0; i < Sales.length; i++){
             Log.d("Sales", Arrays.toString(Sales));
             AulesLliures.add(Sales[i]);

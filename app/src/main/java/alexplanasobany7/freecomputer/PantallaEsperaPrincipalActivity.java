@@ -52,13 +52,9 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
     public static int dia;
     public int tipusPantalla;
     public boolean notis;
-    public String NOTIS, HoraActual;
+    public String HoraActual;
     public String[] sales, aulesOcupades;
-    public static String[] DiesSetmana = {"Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres"};
     public static String[] Sales = {"008","010","011","012","017","018"};
-    private int fila5 = 5, columna6 = 6, columna5 = 5, fila4 = 4;
-    private String Sala008 = "008", Sala010 = "010", Sala011 = "011", Sala012 = "012";
-    private String Sala017 = "017", Sala018 = "018";
     private ProgressBar progressBar;
     private ImageView imageView;
 
