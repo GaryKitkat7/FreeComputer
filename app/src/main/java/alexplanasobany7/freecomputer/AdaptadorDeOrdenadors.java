@@ -45,7 +45,7 @@ public class AdaptadorDeOrdenadors extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getId(); //Retorna l'identificador de l'item que hi ha en la posició rebuda per parametre
+        return getItem(position).getId();
     }
 
     // Crea una nova imatge en cada posició del GridView

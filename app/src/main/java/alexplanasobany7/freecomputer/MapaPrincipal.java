@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -89,7 +91,7 @@ public class MapaPrincipal extends View{
     public int S8,S10,S11,S12, S17, S18, STemp, dia, ii = 0;
     Context context;
     public List<String> aulesOcup;
-    public String[] OrdenadorsLLiures, Sales = PantallaEsperaPrincipalActivity.Sales, aulesOcupades;
+    public String[] OrdenadorsLLiures, aulesOcupades;
     long down, diff;
     public ArrayList<ItemHoraris> itemHorarisArrayList , itemSala;
     private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
@@ -107,6 +109,7 @@ public class MapaPrincipal extends View{
     }
 
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         final float touchX = event.getX();
@@ -115,21 +118,29 @@ public class MapaPrincipal extends View{
         Runnable mLongPressed = new Runnable() {
             public void run() {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Proxims Horaris");
-
                 new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+sala+"&id_dia="+dia);
 
-                llista = new ListView(getContext());
+                try {
+                    Thread.sleep(500);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Proxims Horaris");
 
-                adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(getContext(),itemHorarisArrayList);
-                llista.setAdapter(adaptadorLlistaHoraris);
+
+                    llista = new ListView(getContext());
+
+                    adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(getContext(),itemHorarisArrayList);
+                    llista.setAdapter(adaptadorLlistaHoraris);
 
 
-                builder.setView(llista);
-                final Dialog dialog = builder.create();
+                    builder.setView(llista);
+                    final Dialog dialog = builder.create();
 
-                dialog.show();
+                    dialog.show();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         };
         switch (event.getAction()) {
@@ -140,7 +151,7 @@ public class MapaPrincipal extends View{
             case MotionEvent.ACTION_UP:
                 diff = System.currentTimeMillis() - down;
                 Log.d("Temps diferencia", String.valueOf(diff));
-                if(diff > 700){
+                if(diff > 500){
                     for(RectF rect : rectangle){
                         if(rect.contains(touchX,touchY)){
                             sala = rectangles.get(rect);
@@ -170,7 +181,7 @@ public class MapaPrincipal extends View{
     }
 
     public void init(){
-        Glide.with(getContext()).load(R.drawable.tr1tr2min).asBitmap().into(new SimpleTarget<Bitmap>(2800,2800) {
+        Glide.with(getContext().getApplicationContext()).load(R.drawable.tr1tr2min).asBitmap().into(new SimpleTarget<Bitmap>(2800,2800) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 Drawable drawable = new BitmapDrawable(resource);

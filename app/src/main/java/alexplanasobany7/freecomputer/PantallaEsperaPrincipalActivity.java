@@ -14,6 +14,7 @@ import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,13 +43,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
-    private static final long TEMPS_ESPERAR = 1000;
+    private static final long TEMPS_ESPERAR = 2000;
     public int i = 0, iii = 0, opcio;
     public static int dia;
     public int tipusPantalla;
@@ -64,7 +67,6 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_pantalla_espera_principal);
-//      KEY = getIntent().getExtras().getInt("KEY");
 
         imageView = (ImageView)findViewById(R.id.imatge_espera);
         Glide.with(this).load(R.drawable.pantprincipal).asBitmap().into(imageView);
@@ -98,24 +100,33 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
 
         Log.d("DIA SETAMANA", String.valueOf(dayOfTheWeek));
 
-        if(dayOfTheWeek.equals("lunes")){
+        if(dayOfTheWeek.equals("lunes") || dayOfTheWeek.equals("Monday") ||
+                dayOfTheWeek.equals("Lunes") || dayOfTheWeek.equals("monday")){
             opcio = 1;
             dia = 1;
-        }else if(dayOfTheWeek.equals("martes")){
+        }else if(dayOfTheWeek.equals("martes") || dayOfTheWeek.equals("tuesday") ||
+                dayOfTheWeek.equals("Martes") || dayOfTheWeek.equals("Tuesday")){
             opcio = 2;
             dia = 2;
-        }else if(dayOfTheWeek.equals("miércoles")) {
+        }else if(dayOfTheWeek.equals("miércoles") || dayOfTheWeek.equals("Wednesday") ||
+                dayOfTheWeek.equals("Miércoles") || dayOfTheWeek.equals("wednesday")) {
             opcio = 3;
             dia = 3;
-        }else if(dayOfTheWeek.equals("jueves")) {
+        }else if(dayOfTheWeek.equals("jueves") || dayOfTheWeek.equals("Thursday") ||
+                dayOfTheWeek.equals("Jueves") || dayOfTheWeek.equals("thursday")) {
             opcio = 4;
             dia = 4;
-        }else if(dayOfTheWeek.equals("viernes")){
+        }else if(dayOfTheWeek.equals("viernes") || dayOfTheWeek.equals("Friday") ||
+                dayOfTheWeek.equals("Viernes") || dayOfTheWeek.equals("friday")){
             opcio = 5;
             dia = 5;
         }else{
             opcio = 1;
+            dia = 1;
         }
+
+        new ConsultarDadesHorari().execute("http://95.85.16.142/consultarHorari.php?&id_dia="+dia);
+
 
         sales= new String[152];
         aulesOcupades = new String[7];
@@ -247,6 +258,18 @@ public class PantallaEsperaPrincipalActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.d("reposta", "No ENtRAAA");
+            }
+        }
+    }
+
+    private class ConsultarDadesHorari extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                return downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "URL incorrecta";
             }
         }
     }

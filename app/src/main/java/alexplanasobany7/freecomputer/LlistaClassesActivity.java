@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,7 +43,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,7 +64,7 @@ public class LlistaClassesActivity extends AppCompatActivity{
     private AdaptadorLlistaHoraris adaptadorLlistaHoraris;
     public String[] OrdLLiures, AulesOcupades;
     public List<String> AulesLliures;
-    private String Sala, sala;
+    private String Sala;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,6 @@ public class LlistaClassesActivity extends AppCompatActivity{
         arrayList = new ArrayList<>();
         itemHorarisArrayList = new ArrayList<>();
         AulesLliures = new ArrayList<>();
-
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ServeiConsultaBBDDActivity.ACTION_RUN_ISERVICE);
@@ -114,34 +117,38 @@ public class LlistaClassesActivity extends AppCompatActivity{
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0){
-                    Sala = "008";
+                    Sala = AulesLliures.get(0);
                 }else if(position == 1){
-                    Sala = "010";
+                    Sala = AulesLliures.get(1);
                 }else if(position == 2){
-                    Sala = "011";
+                    Sala = AulesLliures.get(2);
                 }else if(position==3){
-                    Sala = "012";
+                    Sala = AulesLliures.get(3);
                 }else if(position == 4){
-                    Sala = "017";
+                    Sala = AulesLliures.get(4);
                 }else{
-                    Sala = "018";
+                    Sala = AulesLliures.get(5);
                 }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(LlistaClassesActivity.this);
-                builder.setTitle("Proxims Horaris");
 
                 new ConsultarDadesHorari().execute("http://95.85.16.142/ConsultarHoraris.php?id_clase="+Sala+"&id_dia="+dia);
 
-                llista = new ListView(LlistaClassesActivity.this);
+                try {
+                    Thread.sleep(900);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LlistaClassesActivity.this);
+                    builder.setTitle("Pròxims Horaris");
+                    llista = new ListView(LlistaClassesActivity.this);
 
-                adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(LlistaClassesActivity.this,itemHorarisArrayList);
-                llista.setAdapter(adaptadorLlistaHoraris);
+                    adaptadorLlistaHoraris = new AdaptadorLlistaHoraris(LlistaClassesActivity.this,itemHorarisArrayList);
+                    llista.setAdapter(adaptadorLlistaHoraris);
 
 
-                builder.setView(llista);
-                final Dialog dialog = builder.create();
+                    builder.setView(llista);
+                    final Dialog dialog = builder.create();
 
-                dialog.show();
+                    dialog.show();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 return true;
             }
@@ -151,12 +158,13 @@ public class LlistaClassesActivity extends AppCompatActivity{
 
     private void CargarLlista(String[] OrdLLiures, String[] AulesOcupades) {
         AulesLliures = new ArrayList<>();
+        arrayList = new ArrayList<>();
         for(int i = 0; i < Sales.length; i++){
             Log.d("Sales", Arrays.toString(Sales));
             AulesLliures.add(Sales[i]);
         }
 
-        for (int i = 0; i < AulesLliures.size(); i++){
+        for (int i = 0; i < 6; i++){
             if(AulesLliures.contains(AulesOcupades[i])){
                 AulesLliures.remove(AulesOcupades[i]);
             }
@@ -374,11 +382,9 @@ public class LlistaClassesActivity extends AppCompatActivity{
             connection.setConnectTimeout(3000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
-            // Open communications link (network traffic occurs here).
             connection.connect();
             int responseCode = connection.getResponseCode();
             Log.d("reposta", "La resposta es: " + responseCode);
-            // Retrieve the response body as an InputStream.
             stream = connection.getInputStream();
 
             //Convertir el InputString a String
