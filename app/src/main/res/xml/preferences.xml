@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/Configuracio" >
+        <ListPreference
+            android:key="PrefTipusPantalla"
+            android:entries="@array/TipusVista"
+            android:summary="@string/SummaryLlista"
+            android:entryValues="@array/ValorsTipusVista"
+            android:title="@string/TipusVista" />
+
+        <CheckBoxPreference
+            android:key="PrefNotificacions"
+            android:summary="@string/SummaryNotis"
+            android:title="@string/TitolNotificacions" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:key="AvisNotis"
+            android:entries="@array/ModificacionNoti"
+            android:summary="@string/SummaryNotificacions"
+            android:entryValues="@array/ValorsTipusVista"
+            android:title="@string/TipusNotis" />
+
+        <CheckBoxPreference
+            android:key="Vibracio"
+            android:summary="@string/SummaryEstatTelefon"
+            android:title="@string/EstatTelefon" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
